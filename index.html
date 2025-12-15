@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ساعت هوشمند نئون</title>
+	<style>
+		@import url('https://cdn.jsdelivr.net/gh/rastikerdar/iran-sans/fontface.css');
+		
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		html, body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+
+		body {
+			background: #000000;
+			font-family: 'Iran Sans', sans-serif;
+			color: #FFFFFF;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 20px;
+			position: relative;
+			min-height: 100vh;
+		}
+
+		body::before {
+			content: '';
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: 
+				radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.03) 0%, transparent 50%),
+				radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.03) 0%, transparent 50%);
+			animation: pulse 8s ease-in-out infinite;
+			z-index: 0;
+		}
+
+		@keyframes pulse {
+			0%, 100% { opacity: 0.5; }
+			50% { opacity: 1; }
+		}
+
+		.container {
+			position: relative;
+			z-index: 1;
+			text-align: center;
+			width: 100%;
+			max-width: 1400px;
+			display: flex;
+			flex-direction: column;
+			gap: clamp(12px, 2.5vh, 30px);
+			max-height: 100vh;
+			overflow-y: auto;
+			overflow-x: hidden;
+			padding: 10px 0;
+		}
+
+		.container::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		.container::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 10px;
+		}
+
+		.container::-webkit-scrollbar-thumb {
+			background: rgba(0, 255, 255, 0.3);
+			border-radius: 10px;
+		}
+
+		.container::-webkit-scrollbar-thumb:hover {
+			background: rgba(0, 255, 255, 0.5);
+		}
+
+		.basmala {
+			font-size: clamp(20px, 4vw, 48px);
+			color: #FFFFFF;
+			text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+			margin-bottom: clamp(15px, 3vh, 40px);
+			font-family: 'Traditional Arabic', 'Arabic Typesetting', serif;
+			font-weight: 400;
+			letter-spacing: 2px;
+			animation: fadeInUp 0.8s ease-out backwards;
+			line-height: 1.5;
+		}
+
+		.clock-section {
+			background: rgba(0, 0, 0, 0.8);
+			border: 2px solid #00FFFF;
+			border-radius: 20px;
+			padding: clamp(15px, 3vh, 40px) clamp(10px, 2vw, 30px);
+			box-shadow: 
+				0 0 20px rgba(0, 255, 255, 0.5),
+				inset 0 0 20px rgba(0, 255, 255, 0.1);
+			min-height: clamp(80px, 12vh, 200px);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		#clocktext {
+			font-size: clamp(40px, 10vw, 180px);
+			font-weight: 700;
+			letter-spacing: 0.08em;
+			color: #00FFFF;
+			font-family: 'Iran Sans', 'Courier New', monospace;
+			transition: all 0.3s ease;
+			line-height: 1.2;
+			word-break: keep-all;
+			white-space: nowrap;
+		}
+
+		.date-section {
+			background: rgba(0, 0, 0, 0.8);
+			border: 2px solid #FF00FF;
+			border-radius: 20px;
+			padding: clamp(12px, 2.5vh, 30px) clamp(12px, 2vw, 25px);
+			box-shadow: 
+				0 0 20px rgba(255, 0, 255, 0.5),
+				inset 0 0 20px rgba(255, 0, 255, 0.1);
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+			gap: clamp(10px, 2vw, 20px);
+		}
+
+		.date-item {
+			padding: clamp(10px, 2vh, 18px);
+			background: rgba(255, 0, 255, 0.05);
+			border-radius: 12px;
+			border: 1px solid rgba(255, 0, 255, 0.3);
+			min-height: 70px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.date-label {
+			font-size: clamp(13px, 1.8vw, 18px);
+			color: #FF00FF;
+			margin-bottom: 8px;
+			text-shadow: 0 0 10px #FF00FF;
+			text-align: center;
+		}
+
+		.date-value {
+			font-size: clamp(16px, 2.5vw, 24px);
+			font-weight: 700;
+			color: #FFFFFF;
+			text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+			text-align: center;
+			line-height: 1.4;
+		}
+
+		.info-section {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+			gap: clamp(10px, 2vw, 20px);
+		}
+
+		.info-box {
+			background: rgba(0, 0, 0, 0.8);
+			border: 2px solid;
+			border-radius: 20px;
+			padding: clamp(15px, 2.5vh, 30px) clamp(12px, 2vw, 25px);
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: clamp(80px, 10vh, 120px);
+		}
+
+		.info-box:hover {
+			transform: translateY(-5px);
+		}
+
+		#daysPassed {
+			border-color: #00FF00;
+			box-shadow: 
+				0 0 20px rgba(0, 255, 0, 0.5),
+				inset 0 0 20px rgba(0, 255, 0, 0.1);
+		}
+
+		#daysToExam {
+			transition: all 0.5s ease;
+		}
+
+		#daysToExam2 {
+			transition: all 0.5s ease;
+		}
+
+		.info-text {
+			font-size: clamp(15px, 2.2vw, 20px);
+			line-height: 1.6;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+			flex-wrap: wrap;
+			gap: 5px;
+		}
+
+		.info-value {
+			font-weight: 700;
+			font-size: clamp(17px, 2.8vw, 24px);
+			display: inline-block;
+			margin: 0 3px;
+			padding: 4px 12px;
+			border-radius: 8px;
+			background: rgba(255, 255, 255, 0.1);
+			white-space: nowrap;
+		}
+
+		#daysPassed .info-value {
+			color: #00FF00;
+			text-shadow: 0 0 15px #00FF00, 0 0 30px #00FF00;
+			white-space: nowrap;
+		}
+
+		.controls-container {
+			position: fixed;
+			bottom: clamp(15px, 2vh, 25px);
+			left: clamp(10px, 2vw, 20px);
+			display: flex;
+			gap: 10px;
+			z-index: 1000;
+			flex-wrap: wrap;
+		}
+
+		.control-btn {
+			width: clamp(38px, 5vw, 45px);
+			height: clamp(38px, 5vw, 45px);
+			border-radius: 50%;
+			background: rgba(0, 0, 0, 0.9);
+			border: 2px solid #00FFFF;
+			color: #00FFFF;
+			cursor: pointer;
+			font-size: clamp(18px, 2.5vw, 22px);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+			transition: all 0.3s ease;
+			user-select: none;
+			-webkit-tap-highlight-color: transparent;
+		}
+
+		.control-btn:hover {
+			transform: scale(1.1);
+			box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+		}
+
+		.control-btn:active {
+			transform: scale(0.95);
+		}
+
+		.settings-panel {
+			position: fixed;
+			bottom: clamp(70px, 10vh, 90px);
+			left: clamp(10px, 2vw, 20px);
+			background: rgba(0, 0, 0, 0.95);
+			border: 2px solid #00FFFF;
+			border-radius: 15px;
+			padding: clamp(15px, 2.5vh, 25px);
+			min-width: min(90vw, 320px);
+			max-width: 400px;
+			box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+			display: none;
+			z-index: 999;
+			max-height: calc(100vh - clamp(80px, 12vh, 110px));
+			overflow-y: auto;
+		}
+
+		.settings-panel.active {
+			display: block;
+			animation: slideUp 0.3s ease-out;
+		}
+
+		@keyframes slideUp {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.setting-item {
+			margin-bottom: clamp(15px, 2.5vh, 22px);
+		}
+
+		.setting-label {
+			display: block;
+			color: #00FFFF;
+			font-size: clamp(13px, 1.8vw, 15px);
+			margin-bottom: 10px;
+			text-shadow: 0 0 5px #00FFFF;
+		}
+
+		.slider {
+			width: 100%;
+			height: 8px;
+			border-radius: 4px;
+			background: rgba(255, 255, 255, 0.2);
+			outline: none;
+			-webkit-appearance: none;
+			cursor: pointer;
+		}
+
+		.slider::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			appearance: none;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: #00FFFF;
+			cursor: pointer;
+			box-shadow: 0 0 10px #00FFFF;
+			transition: all 0.2s ease;
+		}
+
+		.slider::-webkit-slider-thumb:hover {
+			transform: scale(1.2);
+		}
+
+		.slider::-moz-range-thumb {
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: #00FFFF;
+			cursor: pointer;
+			border: none;
+			box-shadow: 0 0 10px #00FFFF;
+			transition: all 0.2s ease;
+		}
+
+		.slider::-moz-range-thumb:hover {
+			transform: scale(1.2);
+		}
+
+		.color-options {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+			gap: 10px;
+		}
+
+		.color-option {
+			width: 100%;
+			aspect-ratio: 1;
+			max-width: 45px;
+			border-radius: 50%;
+			cursor: pointer;
+			border: 2px solid transparent;
+			transition: all 0.3s ease;
+			justify-self: center;
+		}
+
+		.color-option:hover {
+			transform: scale(1.1);
+		}
+
+		.color-option.active {
+			border-color: #FFFFFF;
+			box-shadow: 0 0 15px currentColor;
+		}
+
+		@keyframes fadeInUp {
+			from {
+				opacity: 0;
+				transform: translateY(30px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.clock-section { animation: fadeInUp 0.6s ease-out 0.1s backwards; }
+		.date-section { animation: fadeInUp 0.6s ease-out 0.2s backwards; }
+		.info-section { animation: fadeInUp 0.6s ease-out 0.3s backwards; }
+
+		@media (max-width: 768px) {
+			body {
+				padding: 10px;
+				justify-content: center;
+			}
+
+			.container {
+				gap: clamp(10px, 2vh, 20px);
+				padding: 5px 0;
+			}
+
+			.basmala {
+				font-size: clamp(18px, 5vw, 32px);
+				margin-bottom: clamp(10px, 2vh, 20px);
+			}
+
+			.clock-section {
+				padding: clamp(12px, 2.5vh, 20px) clamp(8px, 2vw, 15px);
+				min-height: clamp(70px, 10vh, 120px);
+			}
+
+			#clocktext {
+				font-size: clamp(35px, 12vw, 100px);
+			}
+
+			.date-section {
+				grid-template-columns: 1fr;
+				padding: clamp(10px, 2vh, 18px);
+			}
+
+			.date-item {
+				min-height: 65px;
+				padding: clamp(8px, 1.5vh, 15px);
+			}
+
+			.date-label {
+				font-size: clamp(12px, 3vw, 16px);
+				margin-bottom: 6px;
+			}
+
+			.date-value {
+				font-size: clamp(14px, 3.5vw, 20px);
+			}
+
+			.info-section {
+				grid-template-columns: 1fr;
+			}
+
+			.info-box {
+				min-height: clamp(70px, 9vh, 100px);
+				padding: clamp(12px, 2vh, 20px) clamp(10px, 2vw, 18px);
+			}
+
+			.info-text {
+				font-size: clamp(13px, 3.5vw, 18px);
+			}
+
+			.info-value {
+				font-size: clamp(15px, 4vw, 22px);
+				padding: 3px 10px;
+			}
+
+			.controls-container {
+				bottom: 10px;
+				left: 50%;
+				transform: translateX(-50%);
+				justify-content: center;
+			}
+
+			.control-btn {
+				width: clamp(35px, 10vw, 42px);
+				height: clamp(35px, 10vw, 42px);
+				font-size: clamp(16px, 4vw, 20px);
+			}
+
+			.settings-panel {
+				left: 50%;
+				transform: translateX(-50%);
+				bottom: clamp(55px, 8vh, 75px);
+				min-width: min(92vw, 300px);
+				max-width: min(95vw, 350px);
+				padding: clamp(12px, 2vh, 20px);
+			}
+
+			.settings-panel.active {
+				transform: translateX(-50%);
+			}
+
+			.setting-item {
+				margin-bottom: clamp(12px, 2vh, 18px);
+			}
+
+			.setting-label {
+				font-size: clamp(12px, 3vw, 14px);
+				margin-bottom: 8px;
+			}
+
+			.color-options {
+				grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+				gap: 8px;
+			}
+
+			.color-option {
+				max-width: 38px;
+			}
+		}
+
+		@media (max-width: 480px) {
+			body {
+				padding: 8px;
+			}
+
+			.container {
+				gap: clamp(8px, 1.5vh, 15px);
+			}
+
+			.basmala {
+				font-size: clamp(16px, 5vw, 28px);
+				margin-bottom: clamp(8px, 1.5vh, 15px);
+			}
+
+			.clock-section {
+				padding: clamp(10px, 2vh, 18px) clamp(8px, 2vw, 12px);
+				min-height: clamp(60px, 9vh, 100px);
+			}
+
+			#clocktext {
+				font-size: clamp(32px, 13vw, 80px);
+				letter-spacing: 0.05em;
+			}
+
+			.date-section {
+				padding: clamp(8px, 1.5vh, 15px);
+			}
+
+			.date-item {
+				min-height: 60px;
+				padding: clamp(8px, 1.5vh, 12px);
+			}
+
+			.date-label {
+				font-size: clamp(11px, 3vw, 14px);
+				margin-bottom: 5px;
+			}
+
+			.date-value {
+				font-size: clamp(13px, 3.5vw, 18px);
+			}
+
+			.info-box {
+				min-height: clamp(65px, 8vh, 90px);
+				padding: clamp(10px, 1.8vh, 16px) clamp(8px, 2vw, 15px);
+			}
+
+			.info-text {
+				font-size: clamp(12px, 3.5vw, 16px);
+				gap: 3px;
+			}
+
+			.info-value {
+				font-size: clamp(14px, 4vw, 20px);
+				padding: 2px 8px;
+			}
+
+			.control-btn {
+				width: clamp(33px, 11vw, 40px);
+				height: clamp(33px, 11vw, 40px);
+				font-size: clamp(15px, 4.5vw, 19px);
+			}
+
+			.settings-panel {
+				bottom: clamp(50px, 7vh, 70px);
+				min-width: 94vw;
+				max-width: 96vw;
+				padding: clamp(10px, 1.8vh, 18px);
+				max-height: calc(100vh - clamp(60px, 9vh, 80px));
+			}
+
+			.setting-item {
+				margin-bottom: clamp(10px, 1.8vh, 16px);
+			}
+
+			.setting-label {
+				font-size: clamp(11px, 3vw, 13px);
+				margin-bottom: 6px;
+			}
+
+			.slider {
+				height: 6px;
+			}
+
+			.slider::-webkit-slider-thumb {
+				width: 18px;
+				height: 18px;
+			}
+
+			.slider::-moz-range-thumb {
+				width: 18px;
+				height: 18px;
+			}
+
+			.color-options {
+				grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+				gap: 6px;
+			}
+
+			.color-option {
+				max-width: 35px;
+			}
+		}
+
+		@media (max-height: 600px) and (orientation: landscape) {
+			body {
+				justify-content: flex-start;
+				padding: 8px 10px;
+			}
+
+			.container {
+				gap: 6px;
+				padding: 5px 0;
+				max-height: calc(100vh - 16px);
+			}
+
+			.basmala {
+				margin-bottom: 6px;
+				font-size: clamp(16px, 3vh, 24px);
+			}
+
+			.clock-section {
+				padding: 8px 12px;
+				min-height: 55px;
+			}
+
+			#clocktext {
+				font-size: clamp(30px, 8vh, 60px);
+			}
+
+			.date-section, .info-box {
+				padding: 6px 10px;
+				min-height: 45px;
+			}
+
+			.date-item {
+				min-height: 45px;
+				padding: 6px;
+			}
+
+			.date-label {
+				font-size: clamp(10px, 2vh, 14px);
+				margin-bottom: 4px;
+			}
+
+			.date-value {
+				font-size: clamp(12px, 2.5vh, 16px);
+			}
+
+			.info-text {
+				font-size: clamp(11px, 2.2vh, 16px);
+			}
+
+			.info-value {
+				font-size: clamp(13px, 2.8vh, 18px);
+				padding: 2px 8px;
+			}
+
+			.controls-container {
+				bottom: 6px;
+			}
+
+			.control-btn {
+				width: 32px;
+				height: 32px;
+				font-size: 16px;
+			}
+
+			.settings-panel {
+				bottom: 45px;
+				max-height: calc(100vh - 55px);
+				padding: 10px;
+			}
+
+			.setting-item {
+				margin-bottom: 10px;
+			}
+
+			.setting-label {
+				font-size: 11px;
+				margin-bottom: 6px;
+			}
+
+			.slider {
+				height: 6px;
+			}
+
+			.color-options {
+				gap: 6px;
+			}
+
+			.color-option {
+				max-width: 32px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="basmala">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+		
+		<div class="clock-section">
+			<span id="clocktext">00:00:00</span>
+		</div>
+
+		<div class="date-section">
+			<div class="date-item">
+				<div class="date-label">تاریخ شمسی</div>
+				<div class="date-value" id="shamsiDate">در حال بارگذاری...</div>
+			</div>
+			<div class="date-item">
+				<div class="date-label">تاریخ میلادی</div>
+				<div class="date-value" id="miladiDate">در حال بارگذاری...</div>
+			</div>
+			<div class="date-item">
+				<div class="date-label">تاریخ قمری</div>
+				<div class="date-value" id="ghamariDate">در حال بارگذاری...</div>
+			</div>
+		</div>
+
+		<div class="info-section">
+			<div id="daysPassed" class="info-box">
+				<div class="info-text">امروز <span class="info-value">0</span> امین روزیه که زندم</div>
+			</div>
+			<div id="daysToExam" class="info-box">
+				<div class="info-text">تا امتحان زبان اول <span class="info-value">0</span> روز مانده است</div>
+			</div>
+			<div id="daysToExam2" class="info-box">
+				<div class="info-text">تا امتحان زبان دوم <span class="info-value">0</span> روز مانده است</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="controls-container">
+		<button class="control-btn" id="toggleSeconds" title="نمایش/مخفی کردن ثانیه">⏱</button>
+		<button class="control-btn" id="toggleSettings" title="تنظیمات">⚙️</button>
+	</div>
+
+	<div class="settings-panel" id="settingsPanel">
+		<div class="setting-item">
+			<label class="setting-label">شدت نور ساعت</label>
+			<input type="range" min="0" max="100" value="25" class="slider" id="glowIntensity">
+		</div>
+		<div class="setting-item">
+			<label class="setting-label">شدت تپش ساعت</label>
+			<input type="range" min="0" max="100" value="50" class="slider" id="pulseIntensity">
+		</div>
+		<div class="setting-item">
+			<label class="setting-label">رنگ ساعت</label>
+			<div class="color-options">
+				<div class="color-option active" data-color="#FFFFFF" style="background: #FFFFFF;" title="سفید"></div>
+				<div class="color-option" data-color="#FFD700" style="background: #FFD700;" title="زرد طلایی"></div>
+				<div class="color-option" data-color="#32CD32" style="background: #32CD32;" title="سبز لایمی"></div>
+				<div class="color-option" data-color="#006400" style="background: #006400;" title="سبز سلطنتی تیره"></div>
+				<div class="color-option" data-color="#00FFFF" style="background: #00FFFF;" title="فیروزه‌ای"></div>
+				<div class="color-option" data-color="#4169E1" style="background: #4169E1;" title="آبی سلطنتی"></div>
+				<div class="color-option" data-color="#00008B" style="background: #00008B;" title="آبی تیره"></div>
+				<div class="color-option" data-color="#9932CC" style="background: #9932CC;" title="بنفش متوسط"></div>
+				<div class="color-option" data-color="#8B00FF" style="background: #8B00FF;" title="بنفش خالص"></div>
+				<div class="color-option" data-color="#4B0082" style="background: #4B0082;" title="نیلی"></div>
+				<div class="color-option" data-color="#A52A2A" style="background: #A52A2A;" title="قهوه‌ای مایل به قرمز"></div>
+				<div class="color-option" data-color="#8B4513" style="background: #8B4513;" title="قهوه‌ای تیره"></div>
+				<div class="color-option" data-color="#FF1493" style="background: #FF1493;" title="صورتی تیره"></div>
+				<div class="color-option" data-color="#FF69B4" style="background: #FF69B4;" title="صورتی گرم"></div>
+				<div class="color-option" data-color="#FFC0CB" style="background: #FFC0CB;" title="صورتی روشن"></div>
+				<div class="color-option" data-color="#FF0000" style="background: #FF0000;" title="قرمز خالص"></div>
+				<div class="color-option" data-color="#DC143C" style="background: #DC143C;" title="قرمز کرمزی"></div>
+				<div class="color-option" data-color="#FF4500" style="background: #FF4500;" title="نارنجی قرمز"></div>
+				<div class="color-option" data-color="#FFA500" style="background: #FFA500;" title="نارنجی خالص"></div>
+				<div class="color-option" data-color="#808080" style="background: #808080;" title="خاکستری"></div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		"use strict";
+		
+		const textElem = document.getElementById("clocktext");
+		const daysPassedElem = document.getElementById("daysPassed");
+		const daysToExamElem = document.getElementById("daysToExam");
+		const daysToExam2Elem = document.getElementById("daysToExam2");
+		const toggleBtn = document.getElementById("toggleSeconds");
+		const settingsBtn = document.getElementById("toggleSettings");
+		const settingsPanel = document.getElementById("settingsPanel");
+		const glowSlider = document.getElementById("glowIntensity");
+		const pulseSlider = document.getElementById("pulseIntensity");
+		const colorOptions = document.querySelectorAll(".color-option");
+		
+		let showSeconds = false;
+		let currentColor = "#FFFFFF";
+		let glowIntensity = 25;
+		let pulseIntensity = 50;
+		let animationFrameId = null;
+
+		function hexToRgba(hex, alpha = 1) {
+			const r = parseInt(hex.slice(1, 3), 16);
+			const g = parseInt(hex.slice(3, 5), 16);
+			const b = parseInt(hex.slice(5, 7), 16);
+			return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+		}
+
+		function hexToRgb(hex) {
+			hex = hex.replace("#", "");
+			return [
+				parseInt(hex.slice(0, 2), 16),
+				parseInt(hex.slice(2, 4), 16),
+				parseInt(hex.slice(4, 6), 16)
+			];
+		}
+
+		function rgbToHex(rgb) {
+			return "#" + rgb.map(v => Math.round(v).toString(16).padStart(2, "0")).join("");
+		}
+
+		function lerpHex(hexA, hexB, t) {
+			const a = hexToRgb(hexA);
+			const b = hexToRgb(hexB);
+			const r = [
+				a[0] + (b[0] - a[0]) * t,
+				a[1] + (b[1] - a[1]) * t,
+				a[2] + (b[2] - a[2]) * t
+			];
+			return rgbToHex(r);
+		}
+
+		function getColorByDays(days) {
+			const green = "#00FF00";
+			const white = "#FFFFFF";
+			const yellow = "#FFFF00";
+			const orange = "#FFA500";
+			const red = "#FF0000";
+
+			if (days >= 100) return green;
+			if (days <= 0) return red;
+
+			const ranges = [
+				{ high: 100, low: 80, highColor: green, lowColor: white },
+				{ high: 80, low: 50, highColor: white, lowColor: yellow },
+				{ high: 50, low: 35, highColor: yellow, lowColor: orange },
+				{ high: 35, low: 0, highColor: orange, lowColor: red }
+			];
+
+			for (let r of ranges) {
+				if (days <= r.high && days >= r.low) {
+					const t = (days - r.low) / (r.high - r.low);
+					return lerpHex(r.lowColor, r.highColor, t);
+				}
+			}
+
+			return red;
+		}
+
+		function updateClockGlow() {
+			const intensity = glowIntensity / 100;
+			const pulse = pulseIntensity / 100;
+			
+			if (animationFrameId) {
+				cancelAnimationFrame(animationFrameId);
+				animationFrameId = null;
+			}
+			
+			if (pulse > 0) {
+				let startTime = Date.now();
+				
+				function animate() {
+					const elapsed = Date.now() - startTime;
+					const progress = (elapsed % 2000) / 2000;
+					const pulseValue = Math.sin(progress * Math.PI * 2) * 0.5 + 0.5;
+					
+					const minIntensity = intensity * 0.5;
+					const maxIntensity = intensity + (pulse * 0.8);
+					const currentIntensity = minIntensity + (maxIntensity - minIntensity) * pulseValue;
+					
+					const blur1 = 10 * currentIntensity;
+					const blur2 = 20 * currentIntensity;
+					const blur3 = 40 * currentIntensity;
+					const blur4 = 80 * currentIntensity;
+					
+					textElem.style.textShadow = `
+						0 0 ${blur1}px ${currentColor},
+						0 0 ${blur2}px ${currentColor},
+						0 0 ${blur3}px ${currentColor},
+						0 0 ${blur4}px ${currentColor}
+					`;
+					
+					animationFrameId = requestAnimationFrame(animate);
+				}
+				
+				animate();
+			} else {
+				const blur1 = 10 * intensity;
+				const blur2 = 20 * intensity;
+				const blur3 = 40 * intensity;
+				const blur4 = 80 * intensity;
+				
+				textElem.style.textShadow = `
+					0 0 ${blur1}px ${currentColor},
+					0 0 ${blur2}px ${currentColor},
+					0 0 ${blur3}px ${currentColor},
+					0 0 ${blur4}px ${currentColor}
+				`;
+			}
+			
+			textElem.style.color = currentColor;
+		}
+
+		function toShamsi(date) {
+			const g2j = (gy, gm, gd) => {
+				const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+				const jy = (gy <= 1600) ? 0 : 979;
+				gy -= (gy <= 1600) ? 621 : 1600;
+				let days = (365 * gy) + (Math.floor((gy + 3) / 4)) - (Math.floor((gy + 99) / 100)) + 
+						   (Math.floor((gy + 399) / 400)) - 80 + gd + g_d_m[gm - 1];
+				if (gm > 2 && ((gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0))) days++;
+				
+				let jy_val = jy + 33 * Math.floor(days / 12053);
+				days %= 12053;
+				jy_val += 4 * Math.floor(days / 1461);
+				days %= 1461;
+				jy_val += Math.floor((days - 1) / 365);
+				if (days > 365) days = (days - 1) % 365;
+				
+				const jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
+				const jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
+				
+				return [jy_val, jm, jd];
+			};
+			
+			const [y, m, d] = g2j(date.getFullYear(), date.getMonth() + 1, date.getDate());
+			const months = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 
+							'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
+			const weekDays = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+			const weekDay = weekDays[date.getDay()];
+			return `${weekDay}، ${d} ${months[m - 1]} ${y}`;
+		}
+
+		function toGhamari(date) {
+			const gYear = date.getFullYear();
+			const gMonth = date.getMonth() + 1;
+			const gDay = date.getDate();
+			
+			const a = Math.floor((14 - gMonth) / 12);
+			const y = gYear + 4800 - a;
+			const m = gMonth + 12 * a - 3;
+			
+			let jd = gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+			
+			const l = jd - 1948440 + 10632;
+			const n = Math.floor((l - 1) / 10631);
+			let remaining = l - 10631 * n + 354;
+			
+			const jump = Math.floor((10985 - remaining) / 5316) * Math.floor(50 * remaining / 17719) + 
+						 Math.floor(remaining / 5670) * Math.floor(43 * remaining / 15238);
+			
+			remaining = remaining - Math.floor((30 - jump) / 15) * Math.floor(17719 * jump / 50) - 
+						Math.floor(jump / 16) * Math.floor(15238 * jump / 43) + 29;
+			
+			const hMonth = Math.floor(24 * remaining / 709);
+			const hDay = remaining - Math.floor(709 * hMonth / 24);
+			const hYear = 30 * n + jump - 30;
+			
+			const months = ['محرم', 'صفر', 'ربیع الاول', 'ربیع الثانی', 'جمادی الاول', 'جمادی الثانی',
+							'رجب', 'شعبان', 'رمضان', 'شوال', 'ذی‌قعده', 'ذی‌حجه'];
+			const weekDays = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+			const weekDay = weekDays[date.getDay()];
+			return `${weekDay}، ${hDay} ${months[hMonth - 1]} ${hYear}`;
+		}
+
+		function updateClock() {
+			const now = new Date();
+			
+			const hours = String(now.getHours()).padStart(2, "0");
+			const minutes = String(now.getMinutes()).padStart(2, "0");
+			const seconds = String(now.getSeconds()).padStart(2, "0");
+			
+			textElem.textContent = showSeconds ? `${hours}:${minutes}:${seconds}` : `${hours}:${minutes}`;
+
+			const midnight = now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0;
+			
+			if (!window.datesSet || midnight) {
+				document.getElementById('shamsiDate').textContent = toShamsi(now);
+				
+				const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+				const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+							   'July', 'August', 'September', 'October', 'November', 'December'];
+				const weekDay = weekDays[now.getDay()];
+				const month = months[now.getMonth()];
+				document.getElementById('miladiDate').textContent = `${weekDay}, ${now.getDate()} ${month} ${now.getFullYear()}`;
+				
+				document.getElementById('ghamariDate').textContent = toGhamari(now);
+				window.datesSet = true;
+			}
+
+			const startDate = new Date("1999-11-10T00:00:00");
+			const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+			const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+			const daysPassed = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+			daysPassedElem.querySelector('.info-value').textContent = daysPassed.toLocaleString('fa-IR');
+
+			const examDate = new Date("2026-01-28T00:00:00");
+			const examDay = new Date(examDate.getFullYear(), examDate.getMonth(), examDate.getDate());
+			const daysRemaining = Math.ceil((examDay - today) / (1000 * 60 * 60 * 24));
+
+			if (daysRemaining < 0) {
+				daysToExamElem.innerHTML = '<div class="info-text">امتحان اول گذشته است! 🎯</div>';
+				daysToExamElem.style.borderColor = '#FF0000';
+				daysToExamElem.style.boxShadow = `0 0 20px ${hexToRgba('#FF0000', 0.5)}, inset 0 0 20px ${hexToRgba('#FF0000', 0.1)}`;
+			} else if (daysRemaining === 0) {
+				daysToExamElem.innerHTML = '<div class="info-text">امتحان اول امروز است! 🎯🔥</div>';
+				daysToExamElem.style.borderColor = '#FF0000';
+				daysToExamElem.style.boxShadow = `0 0 25px ${hexToRgba('#FF0000', 0.7)}, inset 0 0 25px ${hexToRgba('#FF0000', 0.2)}`;
+			} else {
+				const color = getColorByDays(daysRemaining);
+				daysToExamElem.innerHTML = `<div class="info-text">تا امتحان زبان اول <span class="info-value" style="color:${color}; text-shadow: 0 0 15px ${color}, 0 0 30px ${color};">${daysRemaining.toLocaleString('fa-IR')}</span> روز مانده است</div>`;
+				daysToExamElem.style.borderColor = color;
+				daysToExamElem.style.boxShadow = `0 0 20px ${hexToRgba(color, 0.5)}, inset 0 0 20px ${hexToRgba(color, 0.1)}`;
+			}
+
+			const examDate2 = new Date("2026-02-25T00:00:00");
+			const examDay2 = new Date(examDate2.getFullYear(), examDate2.getMonth(), examDate2.getDate());
+			const daysRemaining2 = Math.ceil((examDay2 - today) / (1000 * 60 * 60 * 24));
+
+			if (daysRemaining2 < 0) {
+				daysToExam2Elem.innerHTML = '<div class="info-text">امتحان دوم گذشته است! 🎯</div>';
+				daysToExam2Elem.style.borderColor = '#FF0000';
+				daysToExam2Elem.style.boxShadow = `0 0 20px ${hexToRgba('#FF0000', 0.5)}, inset 0 0 20px ${hexToRgba('#FF0000', 0.1)}`;
+			} else if (daysRemaining2 === 0) {
+				daysToExam2Elem.innerHTML = '<div class="info-text">امتحان دوم امروز است! 🎯🔥</div>';
+				daysToExam2Elem.style.borderColor = '#FF0000';
+				daysToExam2Elem.style.boxShadow = `0 0 25px ${hexToRgba('#FF0000', 0.7)}, inset 0 0 25px ${hexToRgba('#FF0000', 0.2)}`;
+			} else {
+				const color2 = getColorByDays(daysRemaining2);
+				daysToExam2Elem.innerHTML = `<div class="info-text">تا امتحان زبان دوم <span class="info-value" style="color:${color2}; text-shadow: 0 0 15px ${color2}, 0 0 30px ${color2};">${daysRemaining2.toLocaleString('fa-IR')}</span> روز مانده است</div>`;
+				daysToExam2Elem.style.borderColor = color2;
+				daysToExam2Elem.style.boxShadow = `0 0 20px ${hexToRgba(color2, 0.5)}, inset 0 0 20px ${hexToRgba(color2, 0.1)}`;
+			}
+
+			const nextSecond = 1000 - (now.getTime() % 1000);
+			setTimeout(updateClock, nextSecond);
+		}
+
+		toggleBtn.addEventListener('click', (e) => {
+			e.preventDefault();
+			showSeconds = !showSeconds;
+			toggleBtn.style.opacity = showSeconds ? '1' : '0.5';
+			updateClock();
+		});
+
+		toggleBtn.style.opacity = '0.5';
+
+		settingsBtn.addEventListener('click', (e) => {
+			e.preventDefault();
+			settingsPanel.classList.toggle('active');
+		});
+
+		document.addEventListener('click', (e) => {
+			if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target) && settingsPanel.classList.contains('active')) {
+				settingsPanel.classList.remove('active');
+			}
+		});
+
+		glowSlider.addEventListener('input', (e) => {
+			glowIntensity = e.target.value;
+			updateClockGlow();
+		});
+
+		pulseSlider.addEventListener('input', (e) => {
+			pulseIntensity = e.target.value;
+			updateClockGlow();
+		});
+
+		colorOptions.forEach(option => {
+			option.addEventListener('click', () => {
+				colorOptions.forEach(opt => opt.classList.remove('active'));
+				option.classList.add('active');
+				currentColor = option.getAttribute('data-color');
+				updateClockGlow();
+			});
+		});
+
+		updateClockGlow();
+		updateClock();
+	</script>
+</body>
+</html>
