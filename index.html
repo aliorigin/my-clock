@@ -122,6 +122,7 @@
 			font-weight: 700;
 			color: #FFFFFF;
 			transition: all 0.3s ease;
+			white-space: nowrap;
 		}
 
 		#shamsiDate {
@@ -397,6 +398,7 @@
 
 			.date-value {
 				font-size: clamp(14px, 3.5vw, 20px);
+				white-space: normal;
 			}
 
 			.info-section {
@@ -771,7 +773,8 @@
 			
 			let jd = gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
 			
-			const l = jd - 1948440 + 10632;
+			// محاسبه تاریخ قمری با الگوریتم Kuwaiti (با تصحیح یک روزه)
+			const l = jd - 1948440 + 10632 - 1; // کم کردن 1 روز
 			const n = Math.floor((l - 1) / 10631);
 			let remaining = l - 10631 * n + 354;
 			
@@ -823,7 +826,7 @@
 			const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
 			daysPassedElem.querySelector('.info-value').textContent = toPersianNum(daysPassed);
 
-			const examDate = new Date("2026-03-02T00:00:00");
+			const examDate = new Date("2026-01-29T00:00:00");
 			const daysRemaining = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
 
 			if (daysRemaining <= 0) {
@@ -837,7 +840,7 @@
 				daysToExamElem.style.boxShadow = `0 0 20px ${hexToRgba(color, 0.5)}, inset 0 0 20px ${hexToRgba(color, 0.1)}`;
 			}
 
-			const examDate2 = new Date("2026-05-03T00:00:00");
+			const examDate2 = new Date("2026-02-26T00:00:00");
 			const daysRemaining2 = Math.ceil((examDate2 - now) / (1000 * 60 * 60 * 24));
 
 			if (daysRemaining2 <= 0) {
