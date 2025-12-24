@@ -79,6 +79,7 @@
 			box-shadow: 
 				0 0 20px rgba(0, 255, 255, 0.5),
 				inset 0 0 20px rgba(0, 255, 255, 0.1);
+			transition: all 0.5s ease;
 		}
 
 		#clocktext {
@@ -320,6 +321,35 @@
 			box-shadow: 0 0 10px #00FFFF;
 		}
 
+		.color-mode-toggle {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 10px;
+		}
+
+		.mode-btn {
+			flex: 1;
+			padding: 8px 15px;
+			border-radius: 8px;
+			background: rgba(255, 255, 255, 0.1);
+			border: 2px solid rgba(0, 255, 255, 0.3);
+			color: #00FFFF;
+			cursor: pointer;
+			font-size: 13px;
+			transition: all 0.3s ease;
+			font-family: 'Iran Sans', sans-serif;
+		}
+
+		.mode-btn:hover {
+			background: rgba(0, 255, 255, 0.2);
+		}
+
+		.mode-btn.active {
+			background: rgba(0, 255, 255, 0.3);
+			border-color: #00FFFF;
+			box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+		}
+
 		.color-options {
 			display: flex;
 			gap: 10px;
@@ -538,7 +568,7 @@
 	<div class="settings-panel" id="settingsPanel">
 		<div class="setting-item">
 			<label class="setting-label">شدت نور ساعت</label>
-			<input type="range" min="0" max="100" value="15" class="slider" id="glowIntensity">
+			<input type="range" min="0" max="100" value="3" class="slider" id="glowIntensity">
 		</div>
 		<div class="setting-item">
 			<label class="setting-label">شدت تپش ساعت</label>
@@ -546,23 +576,27 @@
 		</div>
 		<div class="setting-item">
 			<label class="setting-label">رنگ ساعت</label>
-			<div class="color-options">
-				<div class="color-option" data-color="#00FFFF" style="background: #00FFFF;" title="آبی نئون"></div>
+			<div class="color-mode-toggle">
+				<button class="mode-btn active" id="autoModeBtn">اتوماتیک</button>
+				<button class="mode-btn" id="manualModeBtn">دستی</button>
+			</div>
+			<div class="color-options" id="colorOptions">
+				<div class="color-option active" data-color="#00FFFF" style="background: #00FFFF;" title="آبی نئون"></div>
 				<div class="color-option" data-color="#FF00FF" style="background: #FF00FF;" title="صورتی"></div>
 				<div class="color-option" data-color="#00FF00" style="background: #00FF00;" title="سبز"></div>
 				<div class="color-option" data-color="#FFFF00" style="background: #FFFF00;" title="زرد"></div>
 				<div class="color-option" data-color="#FF0000" style="background: #FF0000;" title="قرمز"></div>
 				<div class="color-option" data-color="#FFA500" style="background: #FFA500;" title="نارنجی"></div>
-				<div class="color-option active" data-color="#FFFFFF" style="background: #FFFFFF;" title="سفید"></div>
+				<div class="color-option" data-color="#FFFFFF" style="background: #FFFFFF;" title="سفید"></div>
 			</div>
 		</div>
 		<div class="setting-item">
 			<label class="setting-label">شدت نور تاریخ‌ها</label>
-			<input type="range" min="0" max="100" value="15" class="slider" id="dateGlowIntensity">
+			<input type="range" min="0" max="100" value="56" class="slider" id="dateGlowIntensity">
 		</div>
 		<div class="setting-item">
 			<label class="setting-label">شدت نور روزشمارها</label>
-			<input type="range" min="0" max="100" value="15" class="slider" id="counterGlowIntensity">
+			<input type="range" min="0" max="100" value="8" class="slider" id="counterGlowIntensity">
 		</div>
 	</div>
 
@@ -581,14 +615,53 @@
 		const dateGlowSlider = document.getElementById("dateGlowIntensity");
 		const counterGlowSlider = document.getElementById("counterGlowIntensity");
 		const colorOptions = document.querySelectorAll(".color-option");
+		const autoModeBtn = document.getElementById("autoModeBtn");
+		const manualModeBtn = document.getElementById("manualModeBtn");
+		const colorOptionsDiv = document.getElementById("colorOptions");
+		const clockSection = document.querySelector(".clock-section");
 		
 		let showSeconds = false;
-		let currentColor = "#FFFFFF";
-		let glowIntensity = 15;
+		let currentColor = "#00FFFF";
+		let glowIntensity = 3;
 		let pulseIntensity = 30;
-		let dateGlowIntensity = 15;
-		let counterGlowIntensity = 15;
+		let dateGlowIntensity = 56;
+		let counterGlowIntensity = 8;
 		let animationFrameId = null;
+		let colorMode = 'auto'; // 'auto' or 'manual'
+
+		// تابع دریافت رنگ براساس ساعت
+		function getColorByTime() {
+			const now = new Date();
+			const hour = now.getHours();
+			const minute = now.getMinutes();
+			const totalMinutes = hour * 60 + minute;
+
+			// 4:00 - 11:00 -> سبز
+			if (totalMinutes >= 4 * 60 && totalMinutes < 11 * 60) {
+				return "#00FF00";
+			}
+			// 11:00 - 14:00 -> سبز به سفید (گرادیان)
+			else if (totalMinutes >= 11 * 60 && totalMinutes < 14 * 60) {
+				const progress = (totalMinutes - 11 * 60) / (3 * 60);
+				return lerpHex("#00FF00", "#FFFFFF", progress);
+			}
+			// 14:00 - 18:00 -> نارنجی
+			else if (totalMinutes >= 14 * 60 && totalMinutes < 18 * 60) {
+				return "#FFA500";
+			}
+			// 18:00 - 20:00 -> زرد
+			else if (totalMinutes >= 18 * 60 && totalMinutes < 20 * 60) {
+				return "#FFFF00";
+			}
+			// 20:00 - 22:00 -> آبی
+			else if (totalMinutes >= 20 * 60 && totalMinutes < 22 * 60) {
+				return "#00FFFF";
+			}
+			// 22:00 - 4:00 -> آبی
+			else {
+				return "#00FFFF";
+			}
+		}
 
 		// تبدیل اعداد به فارسی
 		function toPersianNum(num) {
@@ -661,6 +734,11 @@
 		}
 
 		function updateClockGlow() {
+			// اگر حالت اتوماتیک فعاله، رنگ رو براساس ساعت تنظیم کن
+			if (colorMode === 'auto') {
+				currentColor = getColorByTime();
+			}
+
 			const intensity = glowIntensity / 100;
 			const pulse = pulseIntensity / 100;
 			
@@ -670,6 +748,11 @@
 				let startTime = Date.now();
 				
 				function animate() {
+					// در حالت اتوماتیک، رنگ رو هر فریم چک کن
+					if (colorMode === 'auto') {
+						currentColor = getColorByTime();
+					}
+
 					const elapsed = Date.now() - startTime;
 					const progress = (elapsed % 2000) / 2000;
 					const pulseValue = Math.sin(progress * Math.PI * 2) * 0.5 + 0.5;
@@ -689,6 +772,9 @@
 						0 0 ${blur3}px ${currentColor},
 						0 0 ${blur4}px ${currentColor}
 					`;
+					
+					// به‌روزرسانی رنگ حاشیه باکس ساعت
+					updateClockBorder();
 					
 					animationFrameId = requestAnimationFrame(animate);
 				}
@@ -714,6 +800,15 @@
 			}
 			
 			textElem.style.color = currentColor;
+			updateClockBorder();
+		}
+
+		function updateClockBorder() {
+			clockSection.style.borderColor = currentColor;
+			clockSection.style.boxShadow = `
+				0 0 20px ${hexToRgba(currentColor, 0.5)},
+				inset 0 0 20px ${hexToRgba(currentColor, 0.1)}
+			`;
 		}
 
 		function updateDateGlow() {
@@ -892,12 +987,39 @@
 
 		colorOptions.forEach(option => {
 			option.addEventListener('click', () => {
-				colorOptions.forEach(opt => opt.classList.remove('active'));
-				option.classList.add('active');
-				currentColor = option.getAttribute('data-color');
-				updateClockGlow();
+				if (colorMode === 'manual') {
+					colorOptions.forEach(opt => opt.classList.remove('active'));
+					option.classList.add('active');
+					currentColor = option.getAttribute('data-color');
+					updateClockGlow();
+				}
 			});
 		});
+
+		// دکمه‌های تغییر حالت
+		autoModeBtn.addEventListener('click', () => {
+			colorMode = 'auto';
+			autoModeBtn.classList.add('active');
+			manualModeBtn.classList.remove('active');
+			colorOptionsDiv.style.opacity = '0.5';
+			colorOptionsDiv.style.pointerEvents = 'none';
+			updateClockGlow();
+		});
+
+		manualModeBtn.addEventListener('click', () => {
+			colorMode = 'manual';
+			manualModeBtn.classList.add('active');
+			autoModeBtn.classList.remove('active');
+			colorOptionsDiv.style.opacity = '1';
+			colorOptionsDiv.style.pointerEvents = 'auto';
+			updateClockGlow();
+		});
+
+		// تنظیم اولیه
+		if (colorMode === 'auto') {
+			colorOptionsDiv.style.opacity = '0.5';
+			colorOptionsDiv.style.pointerEvents = 'none';
+		}
 
 		updateClockGlow();
 		updateDateGlow();
