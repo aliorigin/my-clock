@@ -268,18 +268,31 @@
 			}
 		}
 
+		.settings-panel::-webkit-scrollbar,
 		.schedule-modal::-webkit-scrollbar {
 			width: 10px;
 		}
 
+		.settings-panel::-webkit-scrollbar-track,
 		.schedule-modal::-webkit-scrollbar-track {
 			background: rgba(255, 255, 255, 0.1);
 			border-radius: 5px;
 		}
 
+		.settings-panel::-webkit-scrollbar-thumb,
 		.schedule-modal::-webkit-scrollbar-thumb {
 			background: #00FFFF;
 			border-radius: 5px;
+		}
+
+		.settings-title {
+			font-size: clamp(24px, 5vw, 36px);
+			font-weight: 700;
+			text-align: center;
+			margin-bottom: 25px;
+			color: #00FFFF;
+			text-shadow: 0 0 15px currentColor;
+			transition: all 0.3s ease;
 		}
 
 		.schedule-title {
@@ -351,18 +364,21 @@
 
 		.settings-panel {
 			position: fixed;
-			bottom: 80px;
-			left: 20px;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
 			background: rgba(0, 0, 0, 0.95);
 			border: 2px solid #00FFFF;
-			border-radius: 15px;
-			padding: 20px;
-			min-width: 300px;
-			max-height: 70vh;
+			border-radius: 20px;
+			padding: 30px;
+			width: 80vw;
+			max-width: 500px;
+			max-height: 85vh;
 			overflow-y: auto;
-			box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+			box-shadow: 0 0 40px rgba(0, 255, 255, 0.7);
 			display: none;
-			z-index: 999;
+			z-index: 1001;
+			transition: all 0.3s ease;
 		}
 
 		.settings-panel::-webkit-scrollbar {
@@ -381,7 +397,7 @@
 
 		.settings-panel.active {
 			display: block;
-			animation: slideUp 0.3s ease-out;
+			animation: modalFadeIn 0.3s ease-out;
 		}
 
 		@keyframes slideUp {
@@ -422,19 +438,19 @@
 			width: 16px;
 			height: 16px;
 			border-radius: 50%;
-			background: #00FFFF;
+			background: var(--thumb-color, #00FFFF);
 			cursor: pointer;
-			box-shadow: 0 0 10px #00FFFF;
+			box-shadow: 0 0 10px var(--thumb-color, #00FFFF);
 		}
 
 		.slider::-moz-range-thumb {
 			width: 16px;
 			height: 16px;
 			border-radius: 50%;
-			background: #00FFFF;
+			background: var(--thumb-color, #00FFFF);
 			cursor: pointer;
 			border: none;
-			box-shadow: 0 0 10px #00FFFF;
+			box-shadow: 0 0 10px var(--thumb-color, #00FFFF);
 		}
 
 		.color-mode-toggle {
@@ -570,6 +586,27 @@
 				width: 45px;
 				height: 45px;
 				font-size: 22px;
+			}
+
+			.settings-panel {
+				padding: 20px 15px;
+				width: 80vw;
+				max-height: 90vh;
+			}
+
+			.settings-title {
+				font-size: clamp(20px, 5vw, 28px);
+				margin-bottom: 20px;
+			}
+
+			.settings-panel {
+				padding: 15px 10px;
+				width: 80vw;
+			}
+
+			.settings-title {
+				font-size: clamp(18px, 5vw, 24px);
+				margin-bottom: 15px;
 			}
 
 			.schedule-modal {
@@ -767,6 +804,7 @@
 	</div>
 
 	<div class="settings-panel" id="settingsPanel">
+		<h2 class="settings-title">تنظیمات</h2>
 		<div class="setting-item">
 			<label class="setting-label">شدت نور ساعت</label>
 			<input type="range" min="0" max="100" value="3" class="slider" id="glowIntensity">
@@ -799,6 +837,7 @@
 			<label class="setting-label">شدت نور روزشمارها</label>
 			<input type="range" min="0" max="100" value="8" class="slider" id="counterGlowIntensity">
 		</div>
+		<button class="close-btn" id="closeSettings">✕</button>
 	</div>
 
 	<script>
@@ -825,6 +864,8 @@
 		const toggleScheduleBtn = document.getElementById("toggleSchedule");
 		const closeScheduleBtn = document.getElementById("closeSchedule");
 		const scheduleTitle = document.querySelector(".schedule-title");
+		const closeSettingsBtn = document.getElementById("closeSettings");
+		const settingsTitle = document.querySelector(".settings-title");
 		
 		let showSeconds = false;
 		let currentColor = "#00FFFF";
@@ -1027,6 +1068,44 @@
 			if (scheduleModal.classList.contains('active')) {
 				updateScheduleColors();
 			}
+			
+			// به‌روزرسانی رنگ منوی تنظیمات
+			if (settingsPanel.classList.contains('active')) {
+				updateSettingsColors();
+			}
+		}
+
+		function updateSettingsColors() {
+			settingsPanel.style.borderColor = currentColor;
+			settingsPanel.style.boxShadow = `0 0 40px ${hexToRgba(currentColor, 0.7)}`;
+			settingsTitle.style.color = currentColor;
+			settingsTitle.style.textShadow = `0 0 15px ${currentColor}`;
+			
+			const labels = settingsPanel.querySelectorAll('.setting-label');
+			labels.forEach(label => {
+				label.style.color = currentColor;
+				label.style.textShadow = `0 0 5px ${currentColor}`;
+			});
+			
+			const sliders = settingsPanel.querySelectorAll('.slider');
+			sliders.forEach(slider => {
+				slider.style.setProperty('--thumb-color', currentColor);
+			});
+			
+			const modeBtns = settingsPanel.querySelectorAll('.mode-btn');
+			modeBtns.forEach(btn => {
+				btn.style.borderColor = hexToRgba(currentColor, 0.3);
+				btn.style.color = currentColor;
+				if (btn.classList.contains('active')) {
+					btn.style.background = hexToRgba(currentColor, 0.3);
+					btn.style.borderColor = currentColor;
+					btn.style.boxShadow = `0 0 10px ${hexToRgba(currentColor, 0.5)}`;
+				}
+			});
+			
+			document.getElementById('closeSettings').style.borderColor = currentColor;
+			document.getElementById('closeSettings').style.color = currentColor;
+			document.getElementById('closeSettings').style.boxShadow = `0 0 15px ${hexToRgba(currentColor, 0.5)}`;
 		}
 
 		function updateScheduleColors() {
@@ -1163,7 +1242,13 @@
 			updateScheduleColors();
 		}
 
-		toggleScheduleBtn.addEventListener('click', showSchedule);
+		toggleScheduleBtn.addEventListener('click', () => {
+			if (scheduleModal.classList.contains('active')) {
+				scheduleModal.classList.remove('active');
+			} else {
+				showSchedule();
+			}
+		});
 
 		closeScheduleBtn.addEventListener('click', () => {
 			scheduleModal.classList.remove('active');
@@ -1173,6 +1258,26 @@
 		scheduleModal.addEventListener('click', (e) => {
 			if (e.target === scheduleModal) {
 				scheduleModal.classList.remove('active');
+			}
+		});
+
+		settingsBtn.addEventListener('click', () => {
+			if (settingsPanel.classList.contains('active')) {
+				settingsPanel.classList.remove('active');
+			} else {
+				settingsPanel.classList.add('active');
+				updateSettingsColors();
+			}
+		});
+
+		closeSettingsBtn.addEventListener('click', () => {
+			settingsPanel.classList.remove('active');
+		});
+
+		// بستن منوی تنظیمات با کلیک خارج از مدال
+		settingsPanel.addEventListener('click', (e) => {
+			if (e.target === settingsPanel) {
+				settingsPanel.classList.remove('active');
 			}
 		});
 
@@ -1324,10 +1429,6 @@
 		});
 
 		toggleBtn.style.opacity = '0.5';
-
-		settingsBtn.addEventListener('click', () => {
-			settingsPanel.classList.toggle('active');
-		});
 
 		glowSlider.addEventListener('input', (e) => {
 			glowIntensity = e.target.value;
