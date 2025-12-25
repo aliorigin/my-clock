@@ -233,6 +233,121 @@
 			transform: scale(0.95);
 		}
 
+		.schedule-modal {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: rgba(0, 0, 0, 0.95);
+			border: 2px solid #00FFFF;
+			border-radius: 20px;
+			padding: 30px;
+			max-width: 90vw;
+			max-height: 85vh;
+			overflow-y: auto;
+			box-shadow: 0 0 40px rgba(0, 255, 255, 0.7);
+			display: none;
+			z-index: 1001;
+			transition: all 0.3s ease;
+		}
+
+		.schedule-modal.active {
+			display: block;
+			animation: modalFadeIn 0.3s ease-out;
+		}
+
+		@keyframes modalFadeIn {
+			from {
+				opacity: 0;
+				transform: translate(-50%, -45%);
+			}
+			to {
+				opacity: 1;
+				transform: translate(-50%, -50%);
+			}
+		}
+
+		.schedule-modal::-webkit-scrollbar {
+			width: 10px;
+		}
+
+		.schedule-modal::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 5px;
+		}
+
+		.schedule-modal::-webkit-scrollbar-thumb {
+			background: #00FFFF;
+			border-radius: 5px;
+		}
+
+		.schedule-title {
+			font-size: clamp(24px, 5vw, 36px);
+			font-weight: 700;
+			text-align: center;
+			margin-bottom: 25px;
+			color: #00FFFF;
+			text-shadow: 0 0 15px currentColor;
+			transition: all 0.3s ease;
+		}
+
+		.schedule-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 30px;
+		}
+
+		.schedule-table th,
+		.schedule-table td {
+			border: 2px solid #00FFFF;
+			padding: 12px 15px;
+			text-align: right;
+			color: #FFFFFF;
+			transition: all 0.3s ease;
+		}
+
+		.schedule-table th {
+			background: rgba(0, 255, 255, 0.2);
+			font-weight: 700;
+			font-size: clamp(14px, 2.5vw, 18px);
+			color: #00FFFF;
+			text-shadow: 0 0 10px currentColor;
+		}
+
+		.schedule-table td {
+			font-size: clamp(12px, 2vw, 16px);
+			background: rgba(0, 0, 0, 0.5);
+		}
+
+		.schedule-table tr:hover td {
+			background: rgba(0, 255, 255, 0.1);
+		}
+
+		.close-btn {
+			display: block;
+			margin: 20px auto 0;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			background: rgba(0, 0, 0, 0.8);
+			border: 2px solid #00FFFF;
+			color: #00FFFF;
+			font-size: 24px;
+			font-weight: 700;
+			cursor: pointer;
+			box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+			transition: all 0.3s ease;
+		}
+
+		.close-btn:hover {
+			transform: scale(1.1);
+			box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+		}
+
+		.close-btn:active {
+			transform: scale(0.95);
+		}
+
 		.settings-panel {
 			position: fixed;
 			bottom: 80px;
@@ -456,6 +571,29 @@
 				font-size: 22px;
 			}
 
+			.schedule-modal {
+				padding: 20px;
+				max-width: 95vw;
+				max-height: 90vh;
+			}
+
+			.schedule-title {
+				font-size: clamp(20px, 5vw, 28px);
+				margin-bottom: 20px;
+			}
+
+			.schedule-table th,
+			.schedule-table td {
+				padding: 8px 10px;
+				font-size: clamp(11px, 2.5vw, 14px);
+			}
+
+			.close-btn {
+				width: 45px;
+				height: 45px;
+				font-size: 22px;
+			}
+
 			.settings-panel {
 				min-width: 280px;
 				max-width: calc(100vw - 40px);
@@ -562,7 +700,16 @@
 
 	<div class="controls-container">
 		<button class="control-btn" id="toggleSeconds" title="نمایش/مخفی کردن ثانیه">⏱</button>
+		<button class="control-btn" id="toggleSchedule" title="برنامه روزانه">☰</button>
 		<button class="control-btn" id="toggleSettings" title="تنظیمات">⚙️</button>
+	</div>
+
+	<div class="schedule-modal" id="scheduleModal">
+		<h2 class="schedule-title">برنامه روزانه</h2>
+		<table class="schedule-table" id="scheduleTable">
+			<!-- جدول به صورت پویا پر می‌شه -->
+		</table>
+		<button class="close-btn" id="closeSchedule">✕</button>
 	</div>
 
 	<div class="settings-panel" id="settingsPanel">
@@ -619,6 +766,11 @@
 		const manualModeBtn = document.getElementById("manualModeBtn");
 		const colorOptionsDiv = document.getElementById("colorOptions");
 		const clockSection = document.querySelector(".clock-section");
+		const scheduleModal = document.getElementById("scheduleModal");
+		const scheduleTable = document.getElementById("scheduleTable");
+		const toggleScheduleBtn = document.getElementById("toggleSchedule");
+		const closeScheduleBtn = document.getElementById("closeSchedule");
+		const scheduleTitle = document.querySelector(".schedule-title");
 		
 		let showSeconds = false;
 		let currentColor = "#00FFFF";
@@ -809,7 +961,166 @@
 				0 0 20px ${hexToRgba(currentColor, 0.5)},
 				inset 0 0 20px ${hexToRgba(currentColor, 0.1)}
 			`;
+			
+			// به‌روزرسانی رنگ دکمه‌ها
+			document.querySelectorAll('.control-btn').forEach(btn => {
+				btn.style.borderColor = currentColor;
+				btn.style.color = currentColor;
+				btn.style.boxShadow = `0 0 15px ${hexToRgba(currentColor, 0.5)}`;
+			});
+			
+			// به‌روزرسانی رنگ جدول برنامه
+			if (scheduleModal.classList.contains('active')) {
+				updateScheduleColors();
+			}
 		}
+
+		function updateScheduleColors() {
+			scheduleModal.style.borderColor = currentColor;
+			scheduleModal.style.boxShadow = `0 0 40px ${hexToRgba(currentColor, 0.7)}`;
+			scheduleTitle.style.color = currentColor;
+			scheduleTitle.style.textShadow = `0 0 15px ${currentColor}`;
+			
+			const cells = scheduleTable.querySelectorAll('th, td');
+			cells.forEach(cell => {
+				if (cell.tagName === 'TH') {
+					cell.style.borderColor = currentColor;
+					cell.style.background = hexToRgba(currentColor, 0.2);
+					cell.style.color = currentColor;
+					cell.style.textShadow = `0 0 10px ${currentColor}`;
+				} else {
+					cell.style.borderColor = currentColor;
+				}
+			});
+			
+			closeScheduleBtn.style.borderColor = currentColor;
+			closeScheduleBtn.style.color = currentColor;
+			closeScheduleBtn.style.boxShadow = `0 0 15px ${hexToRgba(currentColor, 0.5)}`;
+		}
+
+		// داده‌های برنامه روزانه
+		const schedules = {
+			// یکشنبه، سه‌شنبه، پنج‌شنبه (روزهای ورزش)
+			exercise: [
+				['۰۷:۰۰ - ۰۹:۱۵', 'ورزش، دوش و صبحانه', 'شروع روز با انرژی'],
+				['۰۹:۱۵ - ۱۰:۱۵', 'آزمون زبان (امروز)', '۱ ساعت آزمون'],
+				['۱۰:۱۵ - ۱۰:۳۰', 'استراحت', '۱۵ دقیقه تنفس'],
+				['۱۰:۳۰ - ۱۳:۳۰', 'تحلیل آزمون (امروز)', '۳ ساعت بررسی دقیق'],
+				['۱۳:۳۰ - ۱۳:۴۵', 'استراحت', '۱۵ دقیقه تنفس'],
+				['۱۳:۴۵ - ۱۵:۱۵', 'لغت (بخش اول)', '۱.۵ ساعت لغت (اولویت بالا)'],
+				['۱۵:۱۵ - ۱۶:۰۰', 'ناهار و استراحت', '-'],
+				['۱۶:۰۰ - ۱۶:۳۰', 'ادامه لغت', '۳۰ دقیقه باقی‌مانده (جمعاً ۲ ساعت)'],
+				['۱۶:۳۰ - ۱۸:۳۰', 'گرامر', '۲ ساعت مطالعه گرامر'],
+				['۱۸:۳۰ - ۱۸:۴۵', 'استراحت', '۱۵ دقیقه تنفس'],
+				['۱۸:۴۵ - ۱۹:۴۵', 'تمرین هوقن (شنیداری)', 'پایان ۹ ساعت زبان اصلی'],
+				['۱۹:۴۵ - ۲۰:۴۵', 'مرور نکات آزمون دیروز', 'اولویت حیاتی'],
+				['۲۰:۴۵ - ۲۱:۱۵', 'شام', '۳۰ دقیقه'],
+				['۲۱:۱۵ - ۲۱:۴۵', 'دوره آموزشی', '۳۰ دقیقه'],
+				['۲۱:۴۵ - ۲۲:۱۵', 'کتاب توسعه فردی', '۳۰ دقیقه'],
+				['۲۲:۱۵ - ۲۲:۳۰', 'آماده‌سازی خواب', '۱۵ دقیقه'],
+				['۲۲:۳۰ - ۲۳:۰۰', 'مطالعه رمان', '۳۰ دقیقه قبل خواب'],
+				['۲۳:۰۰', 'خواب', 'ثابت']
+			],
+			// شنبه، دوشنبه، چهارشنبه (روزهای عادی)
+			normal: [
+				['۰۷:۰۰ - ۰۸:۰۰', 'بیدارباش، دوش و صبحانه', 'روتین ثابت صبح'],
+				['۰۸:۰۰ - ۰۹:۰۰', 'آزمون زبان (امروز)', '۱ ساعت آزمون'],
+				['۰۹:۰۰ - ۰۹:۱۵', 'استراحت', '۱۵ دقیقه تنفس'],
+				['۰۹:۱۵ - ۱۲:۱۵', 'تحلیل آزمون (امروز)', '۳ ساعت تحلیل'],
+				['۱۲:۱۵ - ۱۲:۳۰', 'استراحت', '۱۵ دقیقه تنفس'],
+				['۱۲:۳۰ - ۱۴:۳۰', 'لغت (۲ ساعت کامل)', 'مطالعه لغات با تمرکز بالا'],
+				['۱۴:۳۰ - ۱۵:۱۵', 'گرامر (بخش اول)', '۴۵ دقیقه گرامر'],
+				['۱۵:۱۵ - ۱۶:۰۰', 'ناهار و استراحت', '-'],
+				['۱۶:۰۰ - ۱۷:۱۵', 'گرامر (بخش دوم)', '۱ ساعت و ۱۵ دقیقه (جمعاً ۲ ساعت)'],
+				['۱۷:۱۵ - ۱۷:۳۰', 'استراحت', '۱۵ دقیقه تنفس'],
+				['۱۷:۳۰ - ۱۸:۳۰', 'تمرین هوقن (شنیداری)', 'پایان ۹ ساعت زبان اصلی'],
+				['۱۸:۳۰ - ۱۹:۰۰', 'استراحت و تنفس', 'پاداش اتمام ۹ ساعت زبان'],
+				['۱۹:۰۰ - ۲۰:۰۰', 'مرور نکات آزمون دیروز', 'اولویت حیاتی'],
+				['۲۰:۰۰ - ۲۰:۳۰', 'شام', '۳۰ دقیقه'],
+				['۲۰:۳۰ - ۲۱:۰۰', 'دوره آموزشی', '۳۰ دقیقه'],
+				['۲۱:۰۰ - ۲۱:۳۰', 'کتاب توسعه فردی', '۳۰ دقیقه'],
+				['۲۱:۳۰ - ۲۲:۳۰', 'وقت آزاد', 'استراحت نهایی'],
+				['۲۲:۳۰ - ۲۳:۰۰', 'مطالعه رمان', '۳۰ دقیقه'],
+				['۲۳:۰۰', 'خواب', 'ثابت']
+			],
+			// جمعه
+			friday: [
+				['۰۷:۰۰ - ۰۸:۰۰', 'بیدارباش، دوش و صبحانه', 'روتین صبح'],
+				['۰۸:۰۰ - ۰۹:۰۰', 'آزمون زبان (امروز)', '-'],
+				['۰۹:۰۰ - ۰۹:۱۵', 'استراحت', '-'],
+				['۰۹:۱۵ - ۱۲:۱۵', 'تحلیل آزمون (امروز)', '-'],
+				['۱۲:۱۵ - ۱۲:۳۰', 'استراحت', '-'],
+				['۱۲:۳۰ - ۱۴:۳۰', 'لغت (۲ ساعت)', 'لغت پیش از گرامر'],
+				['۱۴:۳۰ - ۱۵:۱۵', 'گرامر (بخش اول)', '۴۵ دقیقه گرامر'],
+				['۱۵:۱۵ - ۱۶:۰۰', 'ناهار و استراحت', '-'],
+				['۱۶:۰۰ - ۱۷:۱۵', 'گرامر (بخش دوم)', '۱ ساعت و ۱۵ دقیقه (جمعاً ۲ ساعت)'],
+				['۱۷:۱۵ - ۱۷:۳۰', 'استراحت', '-'],
+				['۱۷:۳۰ - ۱۸:۳۰', 'تمرین هوقن (شنیداری)', 'پایان ۹ ساعت زبان اصلی'],
+				['۱۸:۳۰ - ۱۹:۳۰', 'مرور نکات آزمون دیروز', 'تثبیت یادگیری'],
+				['۱۹:۳۰ - ۲۱:۰۰', 'نظافت اتاق', '۱.۵ ساعت (اولویت ۵)'],
+				['۲۱:۰۰ - ۲۱:۳۰', 'شام', '۳۰ دقیقه'],
+				['۲۱:۳۰ - ۲۲:۰۰', 'دوره آموزشی', '۳۰ دقیقه'],
+				['۲۲:۰۰ - ۲۲:۳۰', 'کتاب توسعه فردی', '۳۰ دقیقه'],
+				['۲۲:۳۰ - ۲۳:۰۰', 'مطالعه رمان', '۳۰ دقیقه'],
+				['۲۳:۰۰', 'خواب', 'ثابت']
+			]
+		};
+
+		function getTodaySchedule() {
+			const dayOfWeek = new Date().getDay();
+			// 0: یکشنبه، 1: دوشنبه، 2: سه‌شنبه، 3: چهارشنبه، 4: پنج‌شنبه، 5: جمعه، 6: شنبه
+			
+			if (dayOfWeek === 5) { // جمعه
+				return schedules.friday;
+			} else if (dayOfWeek === 0 || dayOfWeek === 2 || dayOfWeek === 4) { // یکشنبه، سه‌شنبه، پنج‌شنبه
+				return schedules.exercise;
+			} else { // شنبه، دوشنبه، چهارشنبه
+				return schedules.normal;
+			}
+		}
+
+		function showSchedule() {
+			const schedule = getTodaySchedule();
+			let tableHTML = `
+				<thead>
+					<tr>
+						<th>بازه زمانی</th>
+						<th>فعالیت</th>
+						<th>توضیحات</th>
+					</tr>
+				</thead>
+				<tbody>
+			`;
+			
+			schedule.forEach(row => {
+				tableHTML += `
+					<tr>
+						<td>${row[0]}</td>
+						<td>${row[1]}</td>
+						<td>${row[2]}</td>
+					</tr>
+				`;
+			});
+			
+			tableHTML += '</tbody>';
+			scheduleTable.innerHTML = tableHTML;
+			
+			scheduleModal.classList.add('active');
+			updateScheduleColors();
+		}
+
+		toggleScheduleBtn.addEventListener('click', showSchedule);
+
+		closeScheduleBtn.addEventListener('click', () => {
+			scheduleModal.classList.remove('active');
+		});
+
+		// بستن با کلیک خارج از مدال
+		scheduleModal.addEventListener('click', (e) => {
+			if (e.target === scheduleModal) {
+				scheduleModal.classList.remove('active');
+			}
+		});
 
 		function updateDateGlow() {
 			const intensity = dateGlowIntensity / 100;
