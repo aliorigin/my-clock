@@ -233,135 +233,6 @@
 			transform: scale(0.95);
 		}
 
-		.schedule-modal {
-			position: fixed;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			background: rgba(0, 0, 0, 0.95);
-			border: 2px solid #00FFFF;
-			border-radius: 20px;
-			padding: 30px;
-			width: 90vw;
-			max-width: 1000px;
-			max-height: 85vh;
-			overflow-y: auto;
-			box-shadow: 0 0 40px rgba(0, 255, 255, 0.7);
-			display: none;
-			z-index: 1001;
-			transition: all 0.3s ease;
-		}
-
-		.schedule-modal.active {
-			display: block;
-			animation: modalFadeIn 0.3s ease-out;
-		}
-
-		@keyframes modalFadeIn {
-			from {
-				opacity: 0;
-				transform: translate(-50%, -45%);
-			}
-			to {
-				opacity: 1;
-				transform: translate(-50%, -50%);
-			}
-		}
-
-		.settings-panel::-webkit-scrollbar,
-		.schedule-modal::-webkit-scrollbar {
-			width: 10px;
-		}
-
-		.settings-panel::-webkit-scrollbar-track,
-		.schedule-modal::-webkit-scrollbar-track {
-			background: rgba(255, 255, 255, 0.1);
-			border-radius: 5px;
-		}
-
-		.settings-panel::-webkit-scrollbar-thumb,
-		.schedule-modal::-webkit-scrollbar-thumb {
-			background: #00FFFF;
-			border-radius: 5px;
-		}
-
-		.settings-title {
-			font-size: clamp(24px, 5vw, 36px);
-			font-weight: 700;
-			text-align: center;
-			margin-bottom: 25px;
-			color: #00FFFF;
-			text-shadow: 0 0 15px currentColor;
-			transition: all 0.3s ease;
-		}
-
-		.schedule-title {
-			font-size: clamp(24px, 5vw, 36px);
-			font-weight: 700;
-			text-align: center;
-			margin-bottom: 25px;
-			color: #00FFFF;
-			text-shadow: 0 0 15px currentColor;
-			transition: all 0.3s ease;
-		}
-
-		.schedule-table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-bottom: 30px;
-		}
-
-		.schedule-table th,
-		.schedule-table td {
-			border: 2px solid #00FFFF;
-			padding: 12px 15px;
-			text-align: right;
-			color: #FFFFFF;
-			transition: all 0.3s ease;
-		}
-
-		.schedule-table th {
-			background: rgba(0, 255, 255, 0.2);
-			font-weight: 700;
-			font-size: clamp(14px, 2.5vw, 18px);
-			color: #00FFFF;
-			text-shadow: 0 0 10px currentColor;
-		}
-
-		.schedule-table td {
-			font-size: clamp(12px, 2vw, 16px);
-			background: rgba(0, 0, 0, 0.5);
-		}
-
-		.schedule-table tr:hover td {
-			background: rgba(0, 255, 255, 0.1);
-		}
-
-		.close-btn {
-			display: block;
-			margin: 20px auto 0;
-			width: 50px;
-			height: 50px;
-			border-radius: 50%;
-			background: rgba(0, 0, 0, 0.8);
-			border: 2px solid #00FFFF;
-			color: #00FFFF;
-			font-size: 24px;
-			font-weight: 700;
-			cursor: pointer;
-			box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-			transition: all 0.3s ease;
-		}
-
-		.close-btn:hover {
-			transform: scale(1.1);
-			box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
-		}
-
-		.close-btn:active {
-			transform: scale(0.95);
-		}
-
 		.settings-panel {
 			position: fixed;
 			top: 50%;
@@ -400,15 +271,25 @@
 			animation: modalFadeIn 0.3s ease-out;
 		}
 
-		@keyframes slideUp {
+		@keyframes modalFadeIn {
 			from {
 				opacity: 0;
-				transform: translateY(20px);
+				transform: translate(-50%, -45%);
 			}
 			to {
 				opacity: 1;
-				transform: translateY(0);
+				transform: translate(-50%, -50%);
 			}
+		}
+
+		.settings-title {
+			font-size: clamp(24px, 5vw, 36px);
+			font-weight: 700;
+			text-align: center;
+			margin-bottom: 25px;
+			color: #00FFFF;
+			text-shadow: 0 0 15px currentColor;
+			transition: all 0.3s ease;
 		}
 
 		.setting-item {
@@ -506,6 +387,31 @@
 			box-shadow: 0 0 15px currentColor;
 		}
 
+		.close-btn {
+			display: block;
+			margin: 20px auto 0;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			background: rgba(0, 0, 0, 0.8);
+			border: 2px solid #00FFFF;
+			color: #00FFFF;
+			font-size: 24px;
+			font-weight: 700;
+			cursor: pointer;
+			box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+			transition: all 0.3s ease;
+		}
+
+		.close-btn:hover {
+			transform: scale(1.1);
+			box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+		}
+
+		.close-btn:active {
+			transform: scale(0.95);
+		}
+
 		@keyframes fadeInUp {
 			from {
 				opacity: 0;
@@ -599,80 +505,10 @@
 				margin-bottom: 20px;
 			}
 
-			.settings-panel {
-				padding: 15px 10px;
-				width: 80vw;
-			}
-
-			.settings-title {
-				font-size: clamp(18px, 5vw, 24px);
-				margin-bottom: 15px;
-			}
-
-			.schedule-modal {
-				padding: 20px 15px;
-				width: 95vw;
-				max-height: 90vh;
-			}
-
-			.schedule-title {
-				font-size: clamp(20px, 5vw, 28px);
-				margin-bottom: 20px;
-			}
-
-			.schedule-table {
-				display: block;
-				overflow-x: auto;
-				-webkit-overflow-scrolling: touch;
-			}
-
-			.schedule-table thead,
-			.schedule-table tbody,
-			.schedule-table tr {
-				display: table;
-				width: 100%;
-				table-layout: fixed;
-			}
-
-			.schedule-table th,
-			.schedule-table td {
-				padding: 10px 8px;
-				font-size: clamp(11px, 2.8vw, 14px);
-				word-wrap: break-word;
-			}
-
-			.schedule-table th:first-child,
-			.schedule-table td:first-child {
-				width: 25%;
-			}
-
-			.schedule-table th:nth-child(2),
-			.schedule-table td:nth-child(2) {
-				width: 35%;
-			}
-
-			.schedule-table th:nth-child(3),
-			.schedule-table td:nth-child(3) {
-				width: 40%;
-			}
-
 			.close-btn {
 				width: 45px;
 				height: 45px;
 				font-size: 22px;
-			}
-
-			.settings-panel {
-				min-width: 280px;
-				max-width: calc(100vw - 40px);
-				left: 50%;
-				transform: translateX(-50%);
-				bottom: 90px;
-				max-height: 60vh;
-			}
-
-			.settings-panel.active {
-				transform: translateX(-50%);
 			}
 		}
 
@@ -706,22 +542,6 @@
 			.info-box {
 				padding: 12px;
 				min-height: 70px;
-			}
-
-			.schedule-modal {
-				padding: 15px 10px;
-				width: 80vw;
-			}
-
-			.schedule-title {
-				font-size: clamp(18px, 5vw, 24px);
-				margin-bottom: 15px;
-			}
-
-			.schedule-table th,
-			.schedule-table td {
-				padding: 8px 6px;
-				font-size: clamp(10px, 2.5vw, 13px);
 			}
 
 			.close-btn {
@@ -781,26 +601,17 @@
 				<div class="info-text">امروز <span class="info-value">۰</span> امین روزیه که زندم</div>
 			</div>
 			<div id="daysToExam" class="info-box">
-				<div class="info-text">تا امتحان زبان اول <span class="info-value">۰</span> روز مانده است</div>
+				<div class="info-text">تا تاریخ ثبت نام <span class="info-value">۰</span> روز مانده است</div>
 			</div>
 			<div id="daysToExam2" class="info-box">
-				<div class="info-text">تا امتحان زبان دوم <span class="info-value">۰</span> روز مانده است</div>
+				<div class="info-text">تا امتحان زبان <span class="info-value">۰</span> روز مانده است</div>
 			</div>
 		</div>
 	</div>
 
 	<div class="controls-container">
 		<button class="control-btn" id="toggleSeconds" title="نمایش/مخفی کردن ثانیه">⏱</button>
-		<button class="control-btn" id="toggleSchedule" title="برنامه روزانه">☰</button>
 		<button class="control-btn" id="toggleSettings" title="تنظیمات">⚙️</button>
-	</div>
-
-	<div class="schedule-modal" id="scheduleModal">
-		<h2 class="schedule-title">برنامه روزانه</h2>
-		<table class="schedule-table" id="scheduleTable">
-			<!-- جدول به صورت پویا پر می‌شه -->
-		</table>
-		<button class="close-btn" id="closeSchedule">✕</button>
 	</div>
 
 	<div class="settings-panel" id="settingsPanel">
@@ -859,11 +670,6 @@
 		const manualModeBtn = document.getElementById("manualModeBtn");
 		const colorOptionsDiv = document.getElementById("colorOptions");
 		const clockSection = document.querySelector(".clock-section");
-		const scheduleModal = document.getElementById("scheduleModal");
-		const scheduleTable = document.getElementById("scheduleTable");
-		const toggleScheduleBtn = document.getElementById("toggleSchedule");
-		const closeScheduleBtn = document.getElementById("closeSchedule");
-		const scheduleTitle = document.querySelector(".schedule-title");
 		const closeSettingsBtn = document.getElementById("closeSettings");
 		const settingsTitle = document.querySelector(".settings-title");
 		
@@ -874,49 +680,40 @@
 		let dateGlowIntensity = 56;
 		let counterGlowIntensity = 8;
 		let animationFrameId = null;
-		let colorMode = 'auto'; // 'auto' or 'manual'
+		let colorMode = 'auto';
 
-		// تابع دریافت رنگ براساس ساعت
 		function getColorByTime() {
 			const now = new Date();
 			const hour = now.getHours();
 			const minute = now.getMinutes();
 			const totalMinutes = hour * 60 + minute;
 
-			// 4:00 - 11:00 -> سبز
 			if (totalMinutes >= 4 * 60 && totalMinutes < 11 * 60) {
 				return "#00FF00";
 			}
-			// 11:00 - 14:00 -> سبز به سفید (گرادیان)
 			else if (totalMinutes >= 11 * 60 && totalMinutes < 14 * 60) {
 				const progress = (totalMinutes - 11 * 60) / (3 * 60);
 				return lerpHex("#00FF00", "#FFFFFF", progress);
 			}
-			// 14:00 - 18:00 -> نارنجی
 			else if (totalMinutes >= 14 * 60 && totalMinutes < 18 * 60) {
 				return "#FFA500";
 			}
-			// 18:00 - 20:00 -> زرد
 			else if (totalMinutes >= 18 * 60 && totalMinutes < 20 * 60) {
 				return "#FFFF00";
 			}
-			// 20:00 - 22:00 -> آبی
 			else if (totalMinutes >= 20 * 60 && totalMinutes < 22 * 60) {
 				return "#00FFFF";
 			}
-			// 22:00 - 4:00 -> آبی
 			else {
 				return "#00FFFF";
 			}
 		}
 
-		// تبدیل اعداد به فارسی
 		function toPersianNum(num) {
 			const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
 			return String(num).replace(/\d/g, d => persianDigits[d]);
 		}
 
-		// تبدیل اعداد به عربی
 		function toArabicNum(num) {
 			const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
 			return String(num).replace(/\d/g, d => arabicDigits[d]);
@@ -981,7 +778,6 @@
 		}
 
 		function updateClockGlow() {
-			// اگر حالت اتوماتیک فعاله، رنگ رو براساس ساعت تنظیم کن
 			if (colorMode === 'auto') {
 				currentColor = getColorByTime();
 			}
@@ -995,7 +791,6 @@
 				let startTime = Date.now();
 				
 				function animate() {
-					// در حالت اتوماتیک، رنگ رو هر فریم چک کن
 					if (colorMode === 'auto') {
 						currentColor = getColorByTime();
 					}
@@ -1020,7 +815,6 @@
 						0 0 ${blur4}px ${currentColor}
 					`;
 					
-					// به‌روزرسانی رنگ حاشیه باکس ساعت
 					updateClockBorder();
 					
 					animationFrameId = requestAnimationFrame(animate);
@@ -1057,19 +851,12 @@
 				inset 0 0 20px ${hexToRgba(currentColor, 0.1)}
 			`;
 			
-			// به‌روزرسانی رنگ دکمه‌ها
 			document.querySelectorAll('.control-btn').forEach(btn => {
 				btn.style.borderColor = currentColor;
 				btn.style.color = currentColor;
 				btn.style.boxShadow = `0 0 15px ${hexToRgba(currentColor, 0.5)}`;
 			});
 			
-			// به‌روزرسانی رنگ جدول برنامه
-			if (scheduleModal.classList.contains('active')) {
-				updateScheduleColors();
-			}
-			
-			// به‌روزرسانی رنگ منوی تنظیمات
 			if (settingsPanel.classList.contains('active')) {
 				updateSettingsColors();
 			}
@@ -1108,159 +895,6 @@
 			document.getElementById('closeSettings').style.boxShadow = `0 0 15px ${hexToRgba(currentColor, 0.5)}`;
 		}
 
-		function updateScheduleColors() {
-			scheduleModal.style.borderColor = currentColor;
-			scheduleModal.style.boxShadow = `0 0 40px ${hexToRgba(currentColor, 0.7)}`;
-			scheduleTitle.style.color = currentColor;
-			scheduleTitle.style.textShadow = `0 0 15px ${currentColor}`;
-			
-			const cells = scheduleTable.querySelectorAll('th, td');
-			cells.forEach(cell => {
-				if (cell.tagName === 'TH') {
-					cell.style.borderColor = currentColor;
-					cell.style.background = hexToRgba(currentColor, 0.2);
-					cell.style.color = currentColor;
-					cell.style.textShadow = `0 0 10px ${currentColor}`;
-				} else {
-					cell.style.borderColor = currentColor;
-				}
-			});
-			
-			closeScheduleBtn.style.borderColor = currentColor;
-			closeScheduleBtn.style.color = currentColor;
-			closeScheduleBtn.style.boxShadow = `0 0 15px ${hexToRgba(currentColor, 0.5)}`;
-		}
-
-		// داده‌های برنامه روزانه
-		const schedules = {
-			// یکشنبه، سه‌شنبه، پنج‌شنبه (روزهای ورزش)
-			exercise: [
-				['۰۷:۰۰ - ۰۹:۱۵', 'ورزش، دوش و صبحانه', 'شروع روز با انرژی'],
-				['۰۹:۱۵ - ۱۰:۱۵', 'آزمون زبان (امروز)', '۱ ساعت آزمون'],
-				['۱۰:۱۵ - ۱۰:۳۰', 'استراحت', '۱۵ دقیقه تنفس'],
-				['۱۰:۳۰ - ۱۳:۳۰', 'تحلیل آزمون (امروز)', '۳ ساعت بررسی دقیق'],
-				['۱۳:۳۰ - ۱۳:۴۵', 'استراحت', '۱۵ دقیقه تنفس'],
-				['۱۳:۴۵ - ۱۵:۱۵', 'لغت (بخش اول)', '۱.۵ ساعت لغت (اولویت بالا)'],
-				['۱۵:۱۵ - ۱۶:۰۰', 'ناهار و استراحت', '-'],
-				['۱۶:۰۰ - ۱۶:۳۰', 'ادامه لغت', '۳۰ دقیقه باقی‌مانده (جمعاً ۲ ساعت)'],
-				['۱۶:۳۰ - ۱۸:۳۰', 'گرامر', '۲ ساعت مطالعه گرامر'],
-				['۱۸:۳۰ - ۱۸:۴۵', 'استراحت', '۱۵ دقیقه تنفس'],
-				['۱۸:۴۵ - ۱۹:۴۵', 'تمرین هوقن (شنیداری)', 'پایان ۹ ساعت زبان اصلی'],
-				['۱۹:۴۵ - ۲۰:۴۵', 'مرور نکات آزمون دیروز', 'اولویت حیاتی'],
-				['۲۰:۴۵ - ۲۱:۱۵', 'شام', '۳۰ دقیقه'],
-				['۲۱:۱۵ - ۲۱:۴۵', 'دوره آموزشی', '۳۰ دقیقه'],
-				['۲۱:۴۵ - ۲۲:۱۵', 'کتاب توسعه فردی', '۳۰ دقیقه'],
-				['۲۲:۱۵ - ۲۲:۳۰', 'آماده‌سازی خواب', '۱۵ دقیقه'],
-				['۲۲:۳۰ - ۲۳:۰۰', 'مطالعه رمان', '۳۰ دقیقه قبل خواب'],
-				['۲۳:۰۰', 'خواب', 'ثابت']
-			],
-			// شنبه، دوشنبه، چهارشنبه (روزهای عادی)
-			normal: [
-				['۰۷:۰۰ - ۰۸:۰۰', 'بیدارباش، دوش و صبحانه', 'روتین ثابت صبح'],
-				['۰۸:۰۰ - ۰۹:۰۰', 'آزمون زبان (امروز)', '۱ ساعت آزمون'],
-				['۰۹:۰۰ - ۰۹:۱۵', 'استراحت', '۱۵ دقیقه تنفس'],
-				['۰۹:۱۵ - ۱۲:۱۵', 'تحلیل آزمون (امروز)', '۳ ساعت تحلیل'],
-				['۱۲:۱۵ - ۱۲:۳۰', 'استراحت', '۱۵ دقیقه تنفس'],
-				['۱۲:۳۰ - ۱۴:۳۰', 'لغت (۲ ساعت کامل)', 'مطالعه لغات با تمرکز بالا'],
-				['۱۴:۳۰ - ۱۵:۱۵', 'گرامر (بخش اول)', '۴۵ دقیقه گرامر'],
-				['۱۵:۱۵ - ۱۶:۰۰', 'ناهار و استراحت', '-'],
-				['۱۶:۰۰ - ۱۷:۱۵', 'گرامر (بخش دوم)', '۱ ساعت و ۱۵ دقیقه (جمعاً ۲ ساعت)'],
-				['۱۷:۱۵ - ۱۷:۳۰', 'استراحت', '۱۵ دقیقه تنفس'],
-				['۱۷:۳۰ - ۱۸:۳۰', 'تمرین هوقن (شنیداری)', 'پایان ۹ ساعت زبان اصلی'],
-				['۱۸:۳۰ - ۱۹:۰۰', 'استراحت و تنفس', 'پاداش اتمام ۹ ساعت زبان'],
-				['۱۹:۰۰ - ۲۰:۰۰', 'مرور نکات آزمون دیروز', 'اولویت حیاتی'],
-				['۲۰:۰۰ - ۲۰:۳۰', 'شام', '۳۰ دقیقه'],
-				['۲۰:۳۰ - ۲۱:۰۰', 'دوره آموزشی', '۳۰ دقیقه'],
-				['۲۱:۰۰ - ۲۱:۳۰', 'کتاب توسعه فردی', '۳۰ دقیقه'],
-				['۲۱:۳۰ - ۲۲:۳۰', 'وقت آزاد', 'استراحت نهایی'],
-				['۲۲:۳۰ - ۲۳:۰۰', 'مطالعه رمان', '۳۰ دقیقه'],
-				['۲۳:۰۰', 'خواب', 'ثابت']
-			],
-			// جمعه
-			friday: [
-				['۰۷:۰۰ - ۰۸:۰۰', 'بیدارباش، دوش و صبحانه', 'روتین صبح'],
-				['۰۸:۰۰ - ۰۹:۰۰', 'آزمون زبان (امروز)', '-'],
-				['۰۹:۰۰ - ۰۹:۱۵', 'استراحت', '-'],
-				['۰۹:۱۵ - ۱۲:۱۵', 'تحلیل آزمون (امروز)', '-'],
-				['۱۲:۱۵ - ۱۲:۳۰', 'استراحت', '-'],
-				['۱۲:۳۰ - ۱۴:۳۰', 'لغت (۲ ساعت)', 'لغت پیش از گرامر'],
-				['۱۴:۳۰ - ۱۵:۱۵', 'گرامر (بخش اول)', '۴۵ دقیقه گرامر'],
-				['۱۵:۱۵ - ۱۶:۰۰', 'ناهار و استراحت', '-'],
-				['۱۶:۰۰ - ۱۷:۱۵', 'گرامر (بخش دوم)', '۱ ساعت و ۱۵ دقیقه (جمعاً ۲ ساعت)'],
-				['۱۷:۱۵ - ۱۷:۳۰', 'استراحت', '-'],
-				['۱۷:۳۰ - ۱۸:۳۰', 'تمرین هوقن (شنیداری)', 'پایان ۹ ساعت زبان اصلی'],
-				['۱۸:۳۰ - ۱۹:۳۰', 'مرور نکات آزمون دیروز', 'تثبیت یادگیری'],
-				['۱۹:۳۰ - ۲۱:۰۰', 'نظافت اتاق', '۱.۵ ساعت (اولویت ۵)'],
-				['۲۱:۰۰ - ۲۱:۳۰', 'شام', '۳۰ دقیقه'],
-				['۲۱:۳۰ - ۲۲:۰۰', 'دوره آموزشی', '۳۰ دقیقه'],
-				['۲۲:۰۰ - ۲۲:۳۰', 'کتاب توسعه فردی', '۳۰ دقیقه'],
-				['۲۲:۳۰ - ۲۳:۰۰', 'مطالعه رمان', '۳۰ دقیقه'],
-				['۲۳:۰۰', 'خواب', 'ثابت']
-			]
-		};
-
-		function getTodaySchedule() {
-			const dayOfWeek = new Date().getDay();
-			// 0: یکشنبه، 1: دوشنبه، 2: سه‌شنبه، 3: چهارشنبه، 4: پنج‌شنبه، 5: جمعه، 6: شنبه
-			
-			if (dayOfWeek === 5) { // جمعه
-				return schedules.friday;
-			} else if (dayOfWeek === 0 || dayOfWeek === 2 || dayOfWeek === 4) { // یکشنبه، سه‌شنبه، پنج‌شنبه
-				return schedules.exercise;
-			} else { // شنبه، دوشنبه، چهارشنبه
-				return schedules.normal;
-			}
-		}
-
-		function showSchedule() {
-			const schedule = getTodaySchedule();
-			let tableHTML = `
-				<thead>
-					<tr>
-						<th>بازه زمانی</th>
-						<th>فعالیت</th>
-						<th>توضیحات</th>
-					</tr>
-				</thead>
-				<tbody>
-			`;
-			
-			schedule.forEach(row => {
-				tableHTML += `
-					<tr>
-						<td>${row[0]}</td>
-						<td>${row[1]}</td>
-						<td>${row[2]}</td>
-					</tr>
-				`;
-			});
-			
-			tableHTML += '</tbody>';
-			scheduleTable.innerHTML = tableHTML;
-			
-			scheduleModal.classList.add('active');
-			updateScheduleColors();
-		}
-
-		toggleScheduleBtn.addEventListener('click', () => {
-			if (scheduleModal.classList.contains('active')) {
-				scheduleModal.classList.remove('active');
-			} else {
-				showSchedule();
-			}
-		});
-
-		closeScheduleBtn.addEventListener('click', () => {
-			scheduleModal.classList.remove('active');
-		});
-
-		// بستن با کلیک خارج از مدال
-		scheduleModal.addEventListener('click', (e) => {
-			if (e.target === scheduleModal) {
-				scheduleModal.classList.remove('active');
-			}
-		});
-
 		settingsBtn.addEventListener('click', () => {
 			if (settingsPanel.classList.contains('active')) {
 				settingsPanel.classList.remove('active');
@@ -1274,7 +908,6 @@
 			settingsPanel.classList.remove('active');
 		});
 
-		// بستن منوی تنظیمات با کلیک خارج از مدال
 		settingsPanel.addEventListener('click', (e) => {
 			if (e.target === settingsPanel) {
 				settingsPanel.classList.remove('active');
@@ -1338,8 +971,7 @@
 			
 			let jd = gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
 			
-			// محاسبه تاریخ قمری با الگوریتم Kuwaiti (با تصحیح یک روزه)
-			const l = jd - 1948440 + 10632 - 1; // کم کردن 1 روز
+			const l = jd - 1948440 + 10632 - 1;
 			const n = Math.floor((l - 1) / 10631);
 			let remaining = l - 10631 * n + 354;
 			
@@ -1391,30 +1023,30 @@
 			const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
 			daysPassedElem.querySelector('.info-value').textContent = toPersianNum(daysPassed);
 
-			const examDate = new Date("2026-01-29T00:00:00");
-			const daysRemaining = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+			const registrationDate = new Date("2026-03-01T00:00:00");
+			const daysToRegistration = Math.ceil((registrationDate - now) / (1000 * 60 * 60 * 24));
 
-			if (daysRemaining <= 0) {
-				daysToExamElem.innerHTML = '<div class="info-text">امتحان اول رسیده است! 🎯</div>';
+			if (daysToRegistration <= 0) {
+				daysToExamElem.innerHTML = '<div class="info-text">تاریخ ثبت نام رسیده است! 🎯</div>';
 				daysToExamElem.style.borderColor = '#FF0000';
 				daysToExamElem.style.boxShadow = `0 0 20px ${hexToRgba('#FF0000', 0.5)}, inset 0 0 20px ${hexToRgba('#FF0000', 0.1)}`;
 			} else {
-				const color = getColorByDays(daysRemaining);
-				daysToExamElem.innerHTML = `<div class="info-text">تا امتحان زبان اول <span class="info-value" style="color:${color}; text-shadow: 0 0 ${15 * counterGlowIntensity / 100}px ${color}, 0 0 ${30 * counterGlowIntensity / 100}px ${color};">${toPersianNum(daysRemaining)}</span> روز مانده است</div>`;
+				const color = getColorByDays(daysToRegistration);
+				daysToExamElem.innerHTML = `<div class="info-text">تا تاریخ ثبت نام <span class="info-value" style="color:${color}; text-shadow: 0 0 ${15 * counterGlowIntensity / 100}px ${color}, 0 0 ${30 * counterGlowIntensity / 100}px ${color};">${toPersianNum(daysToRegistration)}</span> روز مانده است</div>`;
 				daysToExamElem.style.borderColor = color;
 				daysToExamElem.style.boxShadow = `0 0 20px ${hexToRgba(color, 0.5)}, inset 0 0 20px ${hexToRgba(color, 0.1)}`;
 			}
 
-			const examDate2 = new Date("2026-02-26T00:00:00");
-			const daysRemaining2 = Math.ceil((examDate2 - now) / (1000 * 60 * 60 * 24));
+			const examDate = new Date("2026-03-26T00:00:00");
+			const daysToExam = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
 
-			if (daysRemaining2 <= 0) {
-				daysToExam2Elem.innerHTML = '<div class="info-text">امتحان دوم رسیده است! 🎯</div>';
+			if (daysToExam <= 0) {
+				daysToExam2Elem.innerHTML = '<div class="info-text">امتحان زبان رسیده است! 🎯</div>';
 				daysToExam2Elem.style.borderColor = '#FF0000';
 				daysToExam2Elem.style.boxShadow = `0 0 20px ${hexToRgba('#FF0000', 0.5)}, inset 0 0 20px ${hexToRgba('#FF0000', 0.1)}`;
 			} else {
-				const color2 = getColorByDays(daysRemaining2);
-				daysToExam2Elem.innerHTML = `<div class="info-text">تا امتحان زبان دوم <span class="info-value" style="color:${color2}; text-shadow: 0 0 ${15 * counterGlowIntensity / 100}px ${color2}, 0 0 ${30 * counterGlowIntensity / 100}px ${color2};">${toPersianNum(daysRemaining2)}</span> روز مانده است</div>`;
+				const color2 = getColorByDays(daysToExam);
+				daysToExam2Elem.innerHTML = `<div class="info-text">تا امتحان زبان <span class="info-value" style="color:${color2}; text-shadow: 0 0 ${15 * counterGlowIntensity / 100}px ${color2}, 0 0 ${30 * counterGlowIntensity / 100}px ${color2};">${toPersianNum(daysToExam)}</span> روز مانده است</div>`;
 				daysToExam2Elem.style.borderColor = color2;
 				daysToExam2Elem.style.boxShadow = `0 0 20px ${hexToRgba(color2, 0.5)}, inset 0 0 20px ${hexToRgba(color2, 0.1)}`;
 			}
@@ -1462,7 +1094,6 @@
 			});
 		});
 
-		// دکمه‌های تغییر حالت
 		autoModeBtn.addEventListener('click', () => {
 			colorMode = 'auto';
 			autoModeBtn.classList.add('active');
@@ -1481,7 +1112,6 @@
 			updateClockGlow();
 		});
 
-		// تنظیم اولیه
 		if (colorMode === 'auto') {
 			colorOptionsDiv.style.opacity = '0.5';
 			colorOptionsDiv.style.pointerEvents = 'none';
