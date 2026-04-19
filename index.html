@@ -4,334 +4,415 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ساعت هوشمند نئون</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 	<style>
-		@import url('https://cdn.jsdelivr.net/gh/rastikerdar/iran-sans/fontface.css');
-		@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
-		
+		/* ─── فونت ایران سنس با fallback مناسب ─── */
+		@font-face {
+			font-family: 'IranSans';
+			src: url('https://cdn.jsdelivr.net/gh/rastikerdar/iran-sans@v5.0.1/dist/font-face.css');
+			font-display: swap;
+		}
+
+		:root {
+			--color: #00FFFF;
+			--color-alpha50: rgba(0,255,255,0.5);
+			--color-alpha10: rgba(0,255,255,0.1);
+			--color-alpha20: rgba(0,255,255,0.2);
+			--color-alpha03: rgba(0,255,255,0.03);
+			--color-pink: #FF00FF;
+			--color-green: #00FF00;
+			--glow-blur: 20px;
+		}
+
 		* {
 			margin: 0;
 			padding: 0;
 			box-sizing: border-box;
 		}
 
-		html, body {
-			width: 100%;
+		html {
 			height: 100%;
-			overflow: hidden;
 		}
 
 		body {
+			min-height: 100%;
 			background: #000000;
-			font-family: 'Iran Sans', sans-serif;
+			font-family: 'IranSans', 'Tahoma', 'Arial Unicode MS', sans-serif;
 			color: #FFFFFF;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			justify-content: center;
-			padding: 20px;
+			justify-content: flex-start;
+			padding: 15px 15px 80px;
 			position: relative;
+			overflow-x: hidden;
+			overflow-y: auto;
 		}
 
+		/* ─── پس‌زمینه متحرک ─── */
 		body::before {
 			content: '';
-			position: absolute;
-			width: 100%;
-			height: 100%;
+			position: fixed;
+			inset: 0;
 			background: 
-				radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.03) 0%, transparent 50%),
-				radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.03) 0%, transparent 50%);
-			animation: pulse 8s ease-in-out infinite;
+				radial-gradient(circle at 20% 30%, var(--color-alpha03) 0%, transparent 50%),
+				radial-gradient(circle at 80% 70%, rgba(255,0,255,0.03) 0%, transparent 50%);
+			animation: bgPulse 8s ease-in-out infinite;
 			z-index: 0;
+			pointer-events: none;
 		}
 
-		@keyframes pulse {
+		@keyframes bgPulse {
 			0%, 100% { opacity: 0.5; }
 			50% { opacity: 1; }
 		}
 
+		/* ─── کانتینر اصلی ─── */
 		.container {
 			position: relative;
 			z-index: 1;
 			text-align: center;
 			width: 100%;
-			max-width: 1200px;
+			max-width: 1100px;
 			display: flex;
 			flex-direction: column;
-			gap: 25px;
+			gap: 20px;
+			padding-top: 10px;
 		}
 
-		.basmala {
-			font-size: clamp(28px, 5vw, 48px);
+		/* ─── جمله انگیزشی ─── */
+		.quote-box {
+			font-size: clamp(13px, 2.2vw, 18px);
 			color: #FFFFFF;
-			text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
-			margin-bottom: 40px;
-			font-family: 'Traditional Arabic', 'Arabic Typesetting', serif;
+			font-family: 'IranSans', 'Tahoma', sans-serif;
 			font-weight: 400;
-			letter-spacing: 3px;
+			line-height: 1.9;
+			background: rgba(0,0,0,0.85);
+			border: 2px solid var(--color);
+			border-radius: 18px;
+			padding: 20px 28px 16px;
+			position: relative;
+			box-shadow: 
+				0 0 20px var(--color-alpha50),
+				inset 0 0 20px var(--color-alpha10);
+			transition: border-color 0.5s ease, box-shadow 0.5s ease;
+			max-width: 900px;
+			margin: 0 auto;
 			animation: fadeInUp 0.8s ease-out backwards;
 		}
 
+		/* نقل‌قول دکوراتیو با span به جای pseudo-element ─── */
+		.quote-mark-open,
+		.quote-mark-close {
+			position: absolute;
+			font-size: 55px;
+			color: var(--color);
+			opacity: 0.25;
+			font-family: Georgia, serif;
+			line-height: 1;
+			transition: color 0.5s ease;
+			pointer-events: none;
+			user-select: none;
+		}
+
+		.quote-mark-open {
+			top: -8px;
+			right: 16px;
+		}
+
+		.quote-mark-close {
+			bottom: -22px;
+			left: 16px;
+		}
+
+		.quote-text {
+			display: block;
+			margin-bottom: 8px;
+			text-align: justify;
+			padding: 0 4px;
+		}
+
+		.quote-author {
+			display: block;
+			font-size: clamp(11px, 1.6vw, 14px);
+			color: var(--color);
+			text-align: left;
+			font-style: italic;
+			opacity: 0.9;
+			transition: color 0.5s ease;
+		}
+
+		/* ─── بخش ساعت ─── */
 		.clock-section {
-			background: rgba(0, 0, 0, 0.8);
-			border: 2px solid #00FFFF;
-			border-radius: 20px;
-			padding: 30px;
+			background: rgba(0,0,0,0.85);
+			border: 2px solid var(--color);
+			border-radius: 18px;
+			padding: 25px 20px;
 			box-shadow: 
-				0 0 20px rgba(0, 255, 255, 0.5),
-				inset 0 0 20px rgba(0, 255, 255, 0.1);
-			transition: all 0.5s ease;
+				0 0 20px var(--color-alpha50),
+				inset 0 0 20px var(--color-alpha10);
+			transition: border-color 0.5s ease, box-shadow 0.5s ease;
+			animation: fadeInUp 0.6s ease-out 0.1s backwards;
 		}
 
 		#clocktext {
-			font-size: clamp(48px, 15vw, 180px);
+			font-size: clamp(52px, 14vw, 170px);
 			font-weight: 700;
-			letter-spacing: 0.1em;
-			color: #00FFFF;
-			font-family: 'Iran Sans', sans-serif;
-			transition: all 0.3s ease;
+			letter-spacing: 0.08em;
+			color: var(--color);
+			font-family: 'IranSans', 'Tahoma', monospace;
+			transition: color 0.5s ease, text-shadow 0.3s ease;
+			display: block;
+			line-height: 1;
 		}
 
+		/* ─── بخش تاریخ ─── */
 		.date-section {
-			background: rgba(0, 0, 0, 0.8);
-			border: 2px solid #FF00FF;
-			border-radius: 20px;
-			padding: 25px;
+			background: rgba(0,0,0,0.85);
+			border: 2px solid var(--color-pink);
+			border-radius: 18px;
+			padding: 20px;
 			box-shadow: 
-				0 0 20px rgba(255, 0, 255, 0.5),
-				inset 0 0 20px rgba(255, 0, 255, 0.1);
+				0 0 20px rgba(255,0,255,0.5),
+				inset 0 0 20px rgba(255,0,255,0.1);
 			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-			gap: 20px;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 15px;
+			animation: fadeInUp 0.6s ease-out 0.2s backwards;
 		}
 
 		.date-item {
-			padding: 15px;
-			background: rgba(255, 0, 255, 0.05);
-			border-radius: 12px;
-			border: 1px solid rgba(255, 0, 255, 0.3);
+			padding: 12px 10px;
+			background: rgba(255,0,255,0.05);
+			border-radius: 10px;
+			border: 1px solid rgba(255,0,255,0.3);
 		}
 
 		.date-label {
-			font-size: clamp(14px, 2vw, 18px);
-			color: #FF00FF;
-			margin-bottom: 8px;
-			text-shadow: 0 0 10px #FF00FF;
+			font-size: clamp(12px, 1.8vw, 16px);
+			color: var(--color-pink);
+			margin-bottom: 6px;
+			text-shadow: 0 0 8px var(--color-pink);
 		}
 
 		.date-value {
-			font-size: clamp(18px, 3vw, 24px);
+			font-size: clamp(13px, 2vw, 20px);
 			font-weight: 700;
 			color: #FFFFFF;
-			transition: all 0.3s ease;
+			transition: text-shadow 0.3s ease;
 			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
-		#shamsiDate {
-			font-family: 'Iran Sans', sans-serif;
-		}
-
-		#miladiDate {
-			font-family: 'Iran Sans', sans-serif;
+		#shamsiDate, #miladiDate {
+			font-family: 'IranSans', 'Tahoma', sans-serif;
 		}
 
 		#ghamariDate {
 			font-family: 'Amiri', 'Traditional Arabic', serif;
-			font-weight: 700;
+			font-size: clamp(12px, 1.8vw, 18px);
 		}
 
+		/* ─── بخش اطلاعات ─── */
 		.info-section {
 			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-			gap: 20px;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 15px;
+			animation: fadeInUp 0.6s ease-out 0.3s backwards;
 		}
 
 		.info-box {
-			background: rgba(0, 0, 0, 0.8);
+			background: rgba(0,0,0,0.85);
 			border: 2px solid;
-			border-radius: 20px;
-			padding: 25px;
+			border-radius: 18px;
+			padding: 18px 12px;
 			transition: all 0.5s ease;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			min-height: 100px;
+			min-height: 90px;
 		}
 
 		.info-box:hover {
-			transform: translateY(-5px);
+			transform: translateY(-4px);
 		}
 
 		#daysPassed {
-			border-color: #00FF00;
+			border-color: var(--color-green);
 			box-shadow: 
-				0 0 20px rgba(0, 255, 0, 0.5),
-				inset 0 0 20px rgba(0, 255, 0, 0.1);
-		}
-
-		#daysToExam, #daysToExam2 {
-			transition: all 0.5s ease;
+				0 0 20px rgba(0,255,0,0.5),
+				inset 0 0 20px rgba(0,255,0,0.1);
 		}
 
 		.info-text {
-			font-size: clamp(16px, 2.5vw, 20px);
-			line-height: 1.8;
+			font-size: clamp(13px, 1.8vw, 18px);
+			line-height: 1.9;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			text-align: center;
 			flex-wrap: wrap;
+			gap: 4px;
 		}
 
 		.info-value {
 			font-weight: 700;
-			font-size: clamp(18px, 3vw, 24px);
+			font-size: clamp(16px, 2.5vw, 22px);
 			display: inline-block;
-			margin: 0 5px;
-			padding: 3px 10px;
+			margin: 0 4px;
+			padding: 2px 10px;
 			border-radius: 8px;
-			background: rgba(255, 255, 255, 0.1);
-			white-space: nowrap;
-			font-family: 'Iran Sans', sans-serif;
+			background: rgba(255,255,255,0.08);
+			font-family: 'IranSans', 'Tahoma', monospace;
 			transition: all 0.3s ease;
 		}
 
 		#daysPassed .info-value {
-			color: #00FF00;
+			color: var(--color-green);
 		}
 
+		/* ─── دکمه‌های کنترل ─── */
 		.controls-container {
 			position: fixed;
-			bottom: 20px;
-			left: 20px;
+			bottom: 18px;
+			left: 18px;
 			display: flex;
 			gap: 10px;
-			z-index: 1000;
+			z-index: 100;
 		}
 
 		.control-btn {
-			width: 40px;
-			height: 40px;
+			width: 44px;
+			height: 44px;
 			border-radius: 50%;
-			background: rgba(0, 0, 0, 0.8);
-			border: 2px solid #00FFFF;
-			color: #00FFFF;
+			background: rgba(0,0,0,0.85);
+			border: 2px solid var(--color);
+			color: var(--color);
 			cursor: pointer;
 			font-size: 20px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+			box-shadow: 0 0 12px var(--color-alpha50);
 			transition: all 0.3s ease;
 		}
 
 		.control-btn:hover {
-			transform: scale(1.1);
-			box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+			transform: scale(1.12);
+			box-shadow: 0 0 22px var(--color-alpha50);
 		}
 
 		.control-btn:active {
-			transform: scale(0.95);
+			transform: scale(0.93);
 		}
 
-		.settings-panel {
+		/* ─── پنل‌های modal ─── */
+		.modal-overlay {
 			position: fixed;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			background: rgba(0, 0, 0, 0.95);
-			border: 2px solid #00FFFF;
-			border-radius: 20px;
-			padding: 30px;
-			width: 80vw;
-			max-width: 500px;
-			max-height: 85vh;
-			overflow-y: auto;
-			box-shadow: 0 0 40px rgba(0, 255, 255, 0.7);
+			inset: 0;
+			background: rgba(0,0,0,0.6);
+			z-index: 200;
 			display: none;
-			z-index: 1001;
-			transition: all 0.3s ease;
+			align-items: center;
+			justify-content: center;
+			padding: 15px;
 		}
 
-		.settings-panel::-webkit-scrollbar {
-			width: 8px;
+		.modal-overlay.active {
+			display: flex;
+			animation: overlayFadeIn 0.25s ease-out;
 		}
 
-		.settings-panel::-webkit-scrollbar-track {
-			background: rgba(255, 255, 255, 0.1);
-			border-radius: 4px;
+		@keyframes overlayFadeIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
 		}
 
-		.settings-panel::-webkit-scrollbar-thumb {
-			background: #00FFFF;
-			border-radius: 4px;
+		.modal-panel {
+			background: rgba(0,0,0,0.97);
+			border: 2px solid var(--color);
+			border-radius: 20px;
+			padding: 28px 24px;
+			width: 100%;
+			max-width: 520px;
+			max-height: 88vh;
+			overflow-y: auto;
+			box-shadow: 0 0 40px var(--color-alpha50);
+			animation: modalSlideIn 0.3s ease-out;
+			position: relative;
 		}
 
-		.settings-panel.active {
-			display: block;
-			animation: modalFadeIn 0.3s ease-out;
+		.modal-panel.wide {
+			max-width: 950px;
 		}
 
-		@keyframes modalFadeIn {
+		@keyframes modalSlideIn {
 			from {
 				opacity: 0;
-				transform: translate(-50%, -45%);
+				transform: translateY(-20px) scale(0.97);
 			}
 			to {
 				opacity: 1;
-				transform: translate(-50%, -50%);
+				transform: translateY(0) scale(1);
 			}
 		}
 
-		.settings-title {
-			font-size: clamp(24px, 5vw, 36px);
+		.modal-panel::-webkit-scrollbar { width: 7px; }
+		.modal-panel::-webkit-scrollbar-track { background: rgba(255,255,255,0.08); border-radius: 4px; }
+		.modal-panel::-webkit-scrollbar-thumb { background: var(--color); border-radius: 4px; }
+
+		.modal-title {
+			font-size: clamp(22px, 4vw, 32px);
 			font-weight: 700;
 			text-align: center;
-			margin-bottom: 25px;
-			color: #00FFFF;
-			text-shadow: 0 0 15px currentColor;
-			transition: all 0.3s ease;
+			margin-bottom: 22px;
+			color: var(--color);
+			text-shadow: 0 0 12px var(--color);
 		}
 
+		/* ─── تنظیمات ─── */
 		.setting-item {
-			margin-bottom: 20px;
+			margin-bottom: 18px;
 		}
 
 		.setting-label {
 			display: block;
-			color: #00FFFF;
+			color: var(--color);
 			font-size: 14px;
-			margin-bottom: 8px;
-			text-shadow: 0 0 5px #00FFFF;
+			margin-bottom: 7px;
+			text-shadow: 0 0 5px var(--color);
 		}
 
 		.slider {
 			width: 100%;
 			height: 6px;
 			border-radius: 3px;
-			background: rgba(255, 255, 255, 0.2);
+			background: rgba(255,255,255,0.15);
 			outline: none;
 			-webkit-appearance: none;
+			cursor: pointer;
 		}
 
 		.slider::-webkit-slider-thumb {
 			-webkit-appearance: none;
-			appearance: none;
 			width: 16px;
 			height: 16px;
 			border-radius: 50%;
-			background: var(--thumb-color, #00FFFF);
+			background: var(--color);
 			cursor: pointer;
-			box-shadow: 0 0 10px var(--thumb-color, #00FFFF);
+			box-shadow: 0 0 8px var(--color);
 		}
 
 		.slider::-moz-range-thumb {
 			width: 16px;
 			height: 16px;
 			border-radius: 50%;
-			background: var(--thumb-color, #00FFFF);
+			background: var(--color);
 			cursor: pointer;
 			border: none;
-			box-shadow: 0 0 10px var(--thumb-color, #00FFFF);
+			box-shadow: 0 0 8px var(--color);
 		}
 
 		.color-mode-toggle {
@@ -342,25 +423,21 @@
 
 		.mode-btn {
 			flex: 1;
-			padding: 8px 15px;
+			padding: 8px 12px;
 			border-radius: 8px;
-			background: rgba(255, 255, 255, 0.1);
-			border: 2px solid rgba(0, 255, 255, 0.3);
-			color: #00FFFF;
+			background: rgba(255,255,255,0.07);
+			border: 2px solid rgba(0,255,255,0.25);
+			color: var(--color);
 			cursor: pointer;
 			font-size: 13px;
 			transition: all 0.3s ease;
-			font-family: 'Iran Sans', sans-serif;
-		}
-
-		.mode-btn:hover {
-			background: rgba(0, 255, 255, 0.2);
+			font-family: 'IranSans', 'Tahoma', sans-serif;
 		}
 
 		.mode-btn.active {
-			background: rgba(0, 255, 255, 0.3);
-			border-color: #00FFFF;
-			box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+			background: rgba(0,255,255,0.2);
+			border-color: var(--color);
+			box-shadow: 0 0 8px var(--color-alpha50);
 		}
 
 		.color-options {
@@ -370,217 +447,159 @@
 		}
 
 		.color-option {
-			width: 40px;
-			height: 40px;
+			width: 38px;
+			height: 38px;
 			border-radius: 50%;
 			cursor: pointer;
 			border: 2px solid transparent;
 			transition: all 0.3s ease;
 		}
 
-		.color-option:hover {
-			transform: scale(1.1);
-		}
+		.color-option:hover { transform: scale(1.12); }
 
 		.color-option.active {
 			border-color: #FFFFFF;
-			box-shadow: 0 0 15px currentColor;
+			box-shadow: 0 0 12px currentColor;
 		}
 
 		.close-btn {
 			display: block;
-			margin: 20px auto 0;
-			width: 50px;
-			height: 50px;
+			margin: 18px auto 0;
+			width: 46px;
+			height: 46px;
 			border-radius: 50%;
-			background: rgba(0, 0, 0, 0.8);
-			border: 2px solid #00FFFF;
-			color: #00FFFF;
-			font-size: 24px;
+			background: rgba(0,0,0,0.8);
+			border: 2px solid var(--color);
+			color: var(--color);
+			font-size: 22px;
 			font-weight: 700;
 			cursor: pointer;
-			box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+			box-shadow: 0 0 12px var(--color-alpha50);
 			transition: all 0.3s ease;
 		}
 
 		.close-btn:hover {
 			transform: scale(1.1);
-			box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+			box-shadow: 0 0 22px var(--color-alpha50);
 		}
 
-		.close-btn:active {
-			transform: scale(0.95);
+		/* ─── جدول برنامه ─── */
+		.schedule-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 20px;
 		}
 
+		.schedule-table th,
+		.schedule-table td {
+			border: 1px solid var(--color);
+			padding: 11px 14px;
+			text-align: right;
+			color: #FFFFFF;
+		}
+
+		.schedule-table th {
+			background: var(--color-alpha20);
+			font-weight: 700;
+			font-size: clamp(13px, 2vw, 17px);
+			color: var(--color);
+			text-shadow: 0 0 8px var(--color);
+		}
+
+		.schedule-table td {
+			font-size: clamp(11px, 1.8vw, 15px);
+			background: rgba(0,0,0,0.4);
+		}
+
+		.schedule-table tr:hover td {
+			background: var(--color-alpha10);
+		}
+
+		/* ─── انیمیشن‌ها ─── */
 		@keyframes fadeInUp {
-			from {
-				opacity: 0;
-				transform: translateY(30px);
-			}
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
+			from { opacity: 0; transform: translateY(25px); }
+			to   { opacity: 1; transform: translateY(0); }
 		}
 
-		.clock-section { animation: fadeInUp 0.6s ease-out 0.1s backwards; }
-		.date-section { animation: fadeInUp 0.6s ease-out 0.2s backwards; }
-		.info-section { animation: fadeInUp 0.6s ease-out 0.3s backwards; }
-
+		/* ─── ریسپانسیو موبایل ─── */
 		@media (max-width: 768px) {
-			body {
-				padding: 10px;
+			body { padding: 10px 10px 75px; }
+
+			.container { gap: 12px; }
+
+			.quote-box {
+				font-size: clamp(12px, 3.5vw, 16px);
+				padding: 16px 20px 14px;
 			}
 
-			.container {
-				gap: 15px;
-			}
+			.quote-mark-open,
+			.quote-mark-close { font-size: 42px; }
 
-			.basmala {
-				font-size: clamp(20px, 5vw, 32px);
-				margin-bottom: 20px;
-				letter-spacing: 1px;
-			}
+			.clock-section { padding: 18px 12px; }
 
-			.clock-section {
-				padding: 20px 15px;
-			}
-
-			#clocktext {
-				font-size: clamp(40px, 12vw, 100px);
-			}
+			#clocktext { font-size: clamp(44px, 13vw, 100px); }
 
 			.date-section {
-				padding: 15px;
 				grid-template-columns: 1fr;
-				gap: 12px;
-			}
-
-			.date-item {
-				padding: 10px;
-			}
-
-			.date-label {
-				font-size: clamp(12px, 3vw, 16px);
+				gap: 10px;
+				padding: 14px;
 			}
 
 			.date-value {
-				font-size: clamp(14px, 3.5vw, 20px);
+				font-size: clamp(12px, 3.5vw, 17px);
 				white-space: normal;
 			}
 
 			.info-section {
 				grid-template-columns: 1fr;
-				gap: 15px;
+				gap: 10px;
 			}
 
-			.info-box {
-				padding: 15px;
-				min-height: 80px;
-			}
+			.info-box { min-height: 72px; padding: 14px 10px; }
 
-			.info-text {
-				font-size: clamp(14px, 3.5vw, 18px);
-			}
+			.info-text { font-size: clamp(13px, 3.2vw, 16px); }
 
-			.info-value {
-				font-size: clamp(16px, 4vw, 22px);
-				padding: 2px 8px;
-			}
+			.info-value { font-size: clamp(15px, 4vw, 20px); }
 
-			.control-btn {
-				width: 45px;
-				height: 45px;
-				font-size: 22px;
-			}
+			.modal-panel { padding: 18px 14px; }
 
-			.settings-panel {
-				padding: 20px 15px;
-				width: 80vw;
-				max-height: 90vh;
-			}
-
-			.settings-title {
-				font-size: clamp(20px, 5vw, 28px);
-				margin-bottom: 20px;
-			}
-
-			.close-btn {
-				width: 45px;
-				height: 45px;
-				font-size: 22px;
-			}
+			.schedule-table th,
+			.schedule-table td { padding: 9px 8px; font-size: clamp(10px, 2.5vw, 13px); }
 		}
 
 		@media (max-width: 480px) {
-			body {
-				padding: 8px;
-			}
-
-			.container {
-				gap: 12px;
-			}
-
-			.basmala {
-				font-size: clamp(18px, 5vw, 28px);
-				margin-bottom: 15px;
-			}
-
-			.clock-section {
-				padding: 15px 10px;
-			}
-
-			#clocktext {
-				font-size: clamp(36px, 12vw, 80px);
-			}
-
-			.date-section {
-				padding: 12px;
-				gap: 10px;
-			}
-
-			.info-box {
-				padding: 12px;
-				min-height: 70px;
-			}
-
-			.close-btn {
-				width: 40px;
-				height: 40px;
-				font-size: 20px;
-				margin-top: 15px;
-			}
+			body { padding: 8px 8px 70px; }
+			.container { gap: 10px; }
+			#clocktext { font-size: clamp(38px, 13vw, 80px); }
 		}
 
 		@media (max-height: 600px) and (orientation: landscape) {
-			.container {
-				gap: 10px;
-			}
-
-			.basmala {
-				margin-bottom: 10px;
-				font-size: clamp(20px, 4vw, 32px);
-			}
-
-			.clock-section, .date-section, .info-box {
-				padding: 12px;
-			}
-
-			.info-box {
-				min-height: 60px;
-			}
+			body { padding: 8px 12px 65px; }
+			.container { gap: 8px; }
+			.clock-section, .info-box { padding: 10px; }
+			.info-box { min-height: 55px; }
+			#clocktext { font-size: clamp(36px, 10vw, 80px); }
 		}
 	</style>
 </head>
 
 <body>
 	<div class="container">
-		<div class="basmala">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
-		
-		<div class="clock-section">
+
+		<!-- جمله انگیزشی -->
+		<div class="quote-box" id="quoteBox">
+			<span class="quote-mark-open" aria-hidden="true">"</span>
+			<span class="quote-text" id="quoteText"></span>
+			<span class="quote-author" id="quoteAuthor"></span>
+			<span class="quote-mark-close" aria-hidden="true">"</span>
+		</div>
+
+		<!-- ساعت -->
+		<div class="clock-section" id="clockSection">
 			<span id="clocktext">۰۰:۰۰:۰۰</span>
 		</div>
 
+		<!-- تاریخ‌ها -->
 		<div class="date-section">
 			<div class="date-item">
 				<div class="date-label">تاریخ شمسی</div>
@@ -596,531 +615,466 @@
 			</div>
 		</div>
 
+		<!-- روزشمارها -->
 		<div class="info-section">
 			<div id="daysPassed" class="info-box">
-				<div class="info-text">امروز <span class="info-value">۰</span> امین روزیه که زندم</div>
+				<div class="info-text">امروز <span class="info-value" id="daysPassedVal">۰</span> امین روزیه که زندم</div>
 			</div>
 			<div id="daysToExam" class="info-box">
-				<div class="info-text">تا تاریخ ثبت نام <span class="info-value">۰</span> روز مانده است</div>
+				<div class="info-text">تا تاریخ ثبت‌نام <span class="info-value" id="regVal">۰</span> روز مانده</div>
 			</div>
 			<div id="daysToExam2" class="info-box">
-				<div class="info-text">تا امتحان زبان <span class="info-value">۰</span> روز مانده است</div>
+				<div class="info-text">تا امتحان زبان <span class="info-value" id="examVal">۰</span> روز مانده</div>
 			</div>
 		</div>
 	</div>
 
+	<!-- دکمه‌های کنترل -->
 	<div class="controls-container">
 		<button class="control-btn" id="toggleSeconds" title="نمایش/مخفی کردن ثانیه">⏱</button>
+		<button class="control-btn" id="toggleSchedule" title="برنامه روزانه">☰</button>
 		<button class="control-btn" id="toggleSettings" title="تنظیمات">⚙️</button>
 	</div>
 
-	<div class="settings-panel" id="settingsPanel">
-		<h2 class="settings-title">تنظیمات</h2>
-		<div class="setting-item">
-			<label class="setting-label">شدت نور ساعت</label>
-			<input type="range" min="0" max="100" value="3" class="slider" id="glowIntensity">
+	<!-- Modal برنامه روزانه -->
+	<div class="modal-overlay" id="scheduleOverlay">
+		<div class="modal-panel wide" id="schedulePanel">
+			<h2 class="modal-title" id="scheduleTitle">برنامه روزانه</h2>
+			<table class="schedule-table" id="scheduleTable"></table>
+			<button class="close-btn" id="closeSchedule">✕</button>
 		</div>
-		<div class="setting-item">
-			<label class="setting-label">شدت تپش ساعت</label>
-			<input type="range" min="0" max="100" value="30" class="slider" id="pulseIntensity">
-		</div>
-		<div class="setting-item">
-			<label class="setting-label">رنگ ساعت</label>
-			<div class="color-mode-toggle">
-				<button class="mode-btn active" id="autoModeBtn">اتوماتیک</button>
-				<button class="mode-btn" id="manualModeBtn">دستی</button>
+	</div>
+
+	<!-- Modal تنظیمات -->
+	<div class="modal-overlay" id="settingsOverlay">
+		<div class="modal-panel" id="settingsPanel">
+			<h2 class="modal-title" id="settingsTitleEl">تنظیمات</h2>
+
+			<div class="setting-item">
+				<label class="setting-label">شدت نور ساعت</label>
+				<input type="range" min="0" max="100" value="3" class="slider" id="glowIntensity">
 			</div>
-			<div class="color-options" id="colorOptions">
-				<div class="color-option active" data-color="#00FFFF" style="background: #00FFFF;" title="آبی نئون"></div>
-				<div class="color-option" data-color="#FF00FF" style="background: #FF00FF;" title="صورتی"></div>
-				<div class="color-option" data-color="#00FF00" style="background: #00FF00;" title="سبز"></div>
-				<div class="color-option" data-color="#FFFF00" style="background: #FFFF00;" title="زرد"></div>
-				<div class="color-option" data-color="#FF0000" style="background: #FF0000;" title="قرمز"></div>
-				<div class="color-option" data-color="#FFA500" style="background: #FFA500;" title="نارنجی"></div>
-				<div class="color-option" data-color="#FFFFFF" style="background: #FFFFFF;" title="سفید"></div>
+			<div class="setting-item">
+				<label class="setting-label">شدت تپش ساعت</label>
+				<input type="range" min="0" max="100" value="30" class="slider" id="pulseIntensity">
 			</div>
+			<div class="setting-item">
+				<label class="setting-label">رنگ ساعت</label>
+				<div class="color-mode-toggle">
+					<button class="mode-btn active" id="autoModeBtn">اتوماتیک</button>
+					<button class="mode-btn" id="manualModeBtn">دستی</button>
+				</div>
+				<div class="color-options" id="colorOptions" style="opacity:0.5; pointer-events:none;">
+					<div class="color-option active" data-color="#00FFFF" style="background:#00FFFF;" title="آبی نئون"></div>
+					<div class="color-option" data-color="#FF00FF" style="background:#FF00FF;" title="صورتی"></div>
+					<div class="color-option" data-color="#00FF00" style="background:#00FF00;" title="سبز"></div>
+					<div class="color-option" data-color="#FFFF00" style="background:#FFFF00;" title="زرد"></div>
+					<div class="color-option" data-color="#FF0000" style="background:#FF0000;" title="قرمز"></div>
+					<div class="color-option" data-color="#FFA500" style="background:#FFA500;" title="نارنجی"></div>
+					<div class="color-option" data-color="#FFFFFF" style="background:#FFFFFF;" title="سفید"></div>
+				</div>
+			</div>
+			<div class="setting-item">
+				<label class="setting-label">شدت نور تاریخ‌ها</label>
+				<input type="range" min="0" max="100" value="56" class="slider" id="dateGlowIntensity">
+			</div>
+			<div class="setting-item">
+				<label class="setting-label">شدت نور روزشمارها</label>
+				<input type="range" min="0" max="100" value="8" class="slider" id="counterGlowIntensity">
+			</div>
+			<button class="close-btn" id="closeSettings">✕</button>
 		</div>
-		<div class="setting-item">
-			<label class="setting-label">شدت نور تاریخ‌ها</label>
-			<input type="range" min="0" max="100" value="56" class="slider" id="dateGlowIntensity">
-		</div>
-		<div class="setting-item">
-			<label class="setting-label">شدت نور روزشمارها</label>
-			<input type="range" min="0" max="100" value="8" class="slider" id="counterGlowIntensity">
-		</div>
-		<button class="close-btn" id="closeSettings">✕</button>
 	</div>
 
 	<script>
-		"use strict";
-		
-		const textElem = document.getElementById("clocktext");
-		const daysPassedElem = document.getElementById("daysPassed");
-		const daysToExamElem = document.getElementById("daysToExam");
-		const daysToExam2Elem = document.getElementById("daysToExam2");
-		const toggleBtn = document.getElementById("toggleSeconds");
-		const settingsBtn = document.getElementById("toggleSettings");
-		const settingsPanel = document.getElementById("settingsPanel");
-		const glowSlider = document.getElementById("glowIntensity");
-		const pulseSlider = document.getElementById("pulseIntensity");
-		const dateGlowSlider = document.getElementById("dateGlowIntensity");
-		const counterGlowSlider = document.getElementById("counterGlowIntensity");
-		const colorOptions = document.querySelectorAll(".color-option");
-		const autoModeBtn = document.getElementById("autoModeBtn");
-		const manualModeBtn = document.getElementById("manualModeBtn");
-		const colorOptionsDiv = document.getElementById("colorOptions");
-		const clockSection = document.querySelector(".clock-section");
-		const closeSettingsBtn = document.getElementById("closeSettings");
-		const settingsTitle = document.querySelector(".settings-title");
-		
-		let showSeconds = false;
-		let currentColor = "#00FFFF";
-		let glowIntensity = 3;
-		let pulseIntensity = 30;
-		let dateGlowIntensity = 56;
-		let counterGlowIntensity = 8;
-		let animationFrameId = null;
-		let colorMode = 'auto';
+	"use strict";
 
-		function getColorByTime() {
-			const now = new Date();
-			const hour = now.getHours();
-			const minute = now.getMinutes();
-			const totalMinutes = hour * 60 + minute;
+	/* ═══════════════════════════════════════════
+	   داده‌ها
+	═══════════════════════════════════════════ */
+	const dailyQuotes = {
+		0: { text: 'موفقیت نهایی نیست، شکست هم فاجعه نیست؛ این شجاعت ادامه دادن است که مهم است.', author: 'وینستون چرچیل' },
+		1: { text: 'بهترین زمان برای کاشت درخت ۲۰ سال پیش بود. دومین زمان خوب، همین الان است.', author: 'ضرب‌المثل چینی' },
+		2: { text: 'اگر می‌توانی رویایی را تصور کنی، می‌توانی آن را انجام دهی.', author: 'والت دیزنی' },
+		3: { text: 'زندگی ۱۰٪ چیزی است که برایت اتفاق می‌افتد و ۹۰٪ نحوه واکنش تو به آن است.', author: 'چارلز آر. سوئیندول' },
+		4: { text: 'تنها محدودیت‌های ما همان‌هایی هستند که خودمان می‌پذیریم.', author: 'ناپلئون هیل' },
+		5: { text: 'راه شروع کردن این است که حرف زدن را تمام کنی و شروع به انجام دادن کنی.', author: 'والت دیزنی' },
+		6: { text: 'تنها راه انجام کارهای بزرگ این است که کاری را که انجام می‌دهی دوست داشته باشی.', author: 'استیو جابز' }
+	};
 
-			if (totalMinutes >= 4 * 60 && totalMinutes < 11 * 60) {
-				return "#00FF00";
-			}
-			else if (totalMinutes >= 11 * 60 && totalMinutes < 14 * 60) {
-				const progress = (totalMinutes - 11 * 60) / (3 * 60);
-				return lerpHex("#00FF00", "#FFFFFF", progress);
-			}
-			else if (totalMinutes >= 14 * 60 && totalMinutes < 18 * 60) {
-				return "#FFA500";
-			}
-			else if (totalMinutes >= 18 * 60 && totalMinutes < 20 * 60) {
-				return "#FFFF00";
-			}
-			else if (totalMinutes >= 20 * 60 && totalMinutes < 22 * 60) {
-				return "#00FFFF";
-			}
-			else {
-				return "#00FFFF";
-			}
+	const schedules = {
+		6: [['۰۶:۳۰ - ۰۷:۱۵','دوش + صبحانه'],['۰۷:۱۵ - ۰۸:۴۵','دوره آموزشی'],['۰۸:۴۵ - ۱۰:۴۵','کتاب اسپکتروم'],['۱۰:۴۵ - ۱۲:۴۵','شغایبن'],['۱۲:۴۵ - ۱۳:۱۵','ناهار'],['۱۳:۱۵ - ۱۴:۱۵','لغت'],['۱۴:۱۵ - ۱۷:۱۵','لزن'],['۱۷:۱۵ - ۱۸:۱۵','گرامر'],['۱۸:۱۵ - ۱۹:۱۵','هوغن'],['۱۹:۱۵ - ۱۹:۴۵','شام'],['۱۹:۴۵ - ۲۰:۴۵','یوتیوب'],['۲۰:۴۵ - ۲۱:۴۵','مکالمه'],['۲۱:۴۵ - ۲۳:۰۰','ریلکس + خواب']],
+		0: [['۰۶:۳۰ - ۰۷:۱۵','دوش + صبحانه'],['۰۷:۱۵ - ۰۸:۴۵','دوره آموزشی'],['۰۸:۴۵ - ۱۰:۴۵','اسپکتروم'],['۱۰:۴۵ - ۱۲:۴۵','شغایبن'],['۱۲:۴۵ - ۱۳:۱۵','ناهار'],['۱۳:۱۵ - ۱۴:۱۵','لغت'],['۱۴:۱۵ - ۱۷:۱۵','لزن'],['۱۷:۱۵ - ۱۸:۱۵','گرامر'],['۱۸:۱۵ - ۱۹:۱۵','هوغن'],['۱۹:۱۵ - ۱۹:۴۵','شام'],['۱۹:۴۵ - ۲۰:۴۵','یوتیوب'],['۲۰:۴۵ - ۲۱:۴۵','مکالمه'],['۲۱:۴۵ - ۲۳:۰۰','خواب']],
+		1: [['۰۶:۳۰ - ۰۷:۱۵','دوش + صبحانه'],['۰۷:۱۵ - ۰۸:۰۰','دوره (۴۵ دقیقه)'],['۰۸:۱۵ - ۱۳:۰۰','دانشگاه'],['۱۳:۰۰ - ۱۳:۴۵','ناهار + استراحت'],['۱۳:۴۵ - ۱۵:۴۵','اسپکتروم'],['۱۵:۴۵ - ۱۷:۴۵','شغایبن'],['۱۷:۴۵ - ۱۸:۴۵','لغت'],['۱۸:۴۵ - ۲۱:۱۵','لزن'],['۲۱:۱۵ - ۲۱:۴۵','شام'],['۲۱:۴۵ - ۲۲:۳۰','گرامر'],['۲۲:۳۰ - ۲۳:۰۰','خواب']],
+		2: [['۰۶:۳۰ - ۰۷:۱۵','دوش + صبحانه'],['۰۷:۱۵ - ۰۸:۴۵','دوره آموزشی'],['۰۸:۴۵ - ۱۰:۴۵','اسپکتروم'],['۱۰:۴۵ - ۱۲:۴۵','شغایبن'],['۱۲:۴۵ - ۱۳:۱۵','ناهار'],['۱۳:۱۵ - ۱۴:۱۵','لغت'],['۱۴:۱۵ - ۱۷:۱۵','لزن'],['۱۷:۱۵ - ۱۸:۱۵','گرامر'],['۱۸:۱۵ - ۱۹:۱۵','هوغن'],['۱۹:۱۵ - ۱۹:۴۵','شام'],['۱۹:۴۵ - ۲۰:۴۵','یوتیوب'],['۲۰:۴۵ - ۲۱:۴۵','مکالمه'],['۲۱:۴۵ - ۲۳:۰۰','خواب']],
+		3: [['۰۶:۳۰ - ۰۷:۱۵','دوش + صبحانه'],['۰۷:۱۵ - ۰۸:۱۵','دوره'],['۰۸:۱۵ - ۱۱:۴۵','دانشگاه'],['۱۱:۴۵ - ۱۲:۱۵','استراحت'],['۱۲:۱۵ - ۱۲:۴۵','ناهار'],['۱۲:۴۵ - ۱۴:۴۵','اسپکتروم'],['۱۴:۴۵ - ۱۶:۴۵','شغایبن'],['۱۶:۴۵ - ۱۷:۴۵','لغت'],['۱۷:۴۵ - ۲۰:۴۵','لزن'],['۲۰:۴۵ - ۲۱:۱۵','شام'],['۲۱:۱۵ - ۲۲:۱۵','گرامر'],['۲۲:۱۵ - ۲۳:۰۰','خواب']],
+		4: [['۰۶:۳۰ - ۰۷:۱۵','دوش + صبحانه'],['۰۷:۱۵ - ۰۸:۴۵','دوره آموزشی'],['۰۸:۴۵ - ۱۰:۴۵','اسپکتروم'],['۱۰:۴۵ - ۱۲:۴۵','شغایبن'],['۱۲:۴۵ - ۱۳:۱۵','ناهار'],['۱۳:۱۵ - ۱۴:۱۵','لغت'],['۱۴:۱۵ - ۱۷:۱۵','لزن'],['۱۷:۱۵ - ۱۸:۱۵','گرامر'],['۱۸:۱۵ - ۱۹:۱۵','هوغن'],['۱۹:۱۵ - ۱۹:۴۵','شام'],['۱۹:۴۵ - ۲۰:۴۵','یوتیوب'],['۲۰:۴۵ - ۲۱:۴۵','مکالمه'],['۲۱:۴۵ - ۲۳:۰۰','خواب']],
+		5: [['۰۶:۳۰ - ۰۷:۱۵','دوش + صبحانه'],['۰۷:۱۵ - ۰۸:۱۵','دوره'],['۰۸:۱۵ - ۱۱:۴۵','دانشگاه'],['۱۱:۴۵ - ۱۲:۱۵','استراحت'],['۱۲:۱۵ - ۱۲:۴۵','ناهار'],['۱۲:۴۵ - ۱۴:۴۵','اسپکتروم'],['۱۴:۴۵ - ۱۶:۴۵','شغایبن'],['۱۶:۴۵ - ۱۷:۴۵','لغت'],['۱۷:۴۵ - ۲۰:۴۵','لزن'],['۲۰:۴۵ - ۲۱:۱۵','شام'],['۲۱:۱۵ - ۲۲:۱۵','گرامر'],['۲۲:۱۵ - ۲۳:۰۰','خواب']]
+	};
+
+	/* ═══════════════════════════════════════════
+	   وضعیت برنامه
+	═══════════════════════════════════════════ */
+	const state = {
+		showSeconds: false,
+		currentColor: '#00FFFF',
+		colorMode: 'auto',
+		glowIntensity: 3,
+		pulseIntensity: 30,
+		dateGlowIntensity: 56,
+		counterGlowIntensity: 8,
+		animFrameId: null,
+		lastDay: -1
+	};
+
+	/* ═══════════════════════════════════════════
+	   المان‌ها
+	═══════════════════════════════════════════ */
+	const $ = id => document.getElementById(id);
+	const clockEl      = $('clocktext');
+	const clockSection = $('clockSection');
+	const quoteBox     = $('quoteBox');
+	const quoteText    = $('quoteText');
+	const quoteAuthor  = $('quoteAuthor');
+	const quoteMOpen   = quoteBox.querySelector('.quote-mark-open');
+	const quoteMClose  = quoteBox.querySelector('.quote-mark-close');
+	const shamsiEl     = $('shamsiDate');
+	const miladiEl     = $('miladiDate');
+	const ghamariEl    = $('ghamariDate');
+	const daysPassedEl = $('daysPassedVal');
+	const regEl        = $('regVal');
+	const examEl       = $('examVal');
+	const regBox       = $('daysToExam');
+	const examBox      = $('daysToExam2');
+
+	/* ═══════════════════════════════════════════
+	   ابزارها
+	═══════════════════════════════════════════ */
+	const P = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+	const A = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+
+	function hexToRgba(hex, a = 1) {
+		const r = parseInt(hex.slice(1,3),16);
+		const g = parseInt(hex.slice(3,5),16);
+		const b = parseInt(hex.slice(5,7),16);
+		return `rgba(${r},${g},${b},${a})`;
+	}
+
+	function hexToRgb(hex) {
+		hex = hex.replace('#','');
+		return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+	}
+
+	function rgbToHex(rgb) {
+		return '#' + rgb.map(v => Math.round(v).toString(16).padStart(2,'0')).join('');
+	}
+
+	function lerpHex(a, b, t) {
+		const ra = hexToRgb(a), rb = hexToRgb(b);
+		return rgbToHex(ra.map((v,i) => v + (rb[i]-v)*t));
+	}
+
+	function getColorByTime() {
+		const now = new Date();
+		const m = now.getHours()*60 + now.getMinutes();
+		if (m >= 240 && m < 660)  return '#00FF00';
+		if (m >= 660 && m < 840)  return lerpHex('#00FF00','#FFFFFF',(m-660)/180);
+		if (m >= 840 && m < 1080) return '#FFA500';
+		if (m >= 1080 && m < 1200) return '#FFFF00';
+		return '#00FFFF';
+	}
+
+	function getColorByDays(d) {
+		if (d >= 100) return '#00FF00';
+		if (d <= 0)   return '#FF0000';
+		const ranges = [
+			{hi:100,lo:80,hc:'#00FF00',lc:'#FFFFFF'},
+			{hi:80, lo:50,hc:'#FFFFFF',lc:'#FFFF00'},
+			{hi:50, lo:35,hc:'#FFFF00',lc:'#FFA500'},
+			{hi:35, lo:0, hc:'#FFA500',lc:'#FF0000'}
+		];
+		for (const r of ranges) {
+			if (d <= r.hi && d >= r.lo)
+				return lerpHex(r.lc, r.hc, (d-r.lo)/(r.hi-r.lo));
 		}
+		return '#FF0000';
+	}
 
-		function toPersianNum(num) {
-			const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-			return String(num).replace(/\d/g, d => persianDigits[d]);
-		}
+	/* ═══════════════════════════════════════════
+	   اعمال رنگ روی CSS variables
+	═══════════════════════════════════════════ */
+	function applyColor(color) {
+		const r = hexToRgb(color);
+		const root = document.documentElement.style;
+		root.setProperty('--color', color);
+		root.setProperty('--color-alpha50', hexToRgba(color, 0.5));
+		root.setProperty('--color-alpha20', hexToRgba(color, 0.2));
+		root.setProperty('--color-alpha10', hexToRgba(color, 0.1));
+		root.setProperty('--color-alpha03', hexToRgba(color, 0.03));
+		// رنگ علامت نقل‌قول
+		quoteMOpen.style.color  = color;
+		quoteMClose.style.color = color;
+	}
 
-		function toArabicNum(num) {
-			const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-			return String(num).replace(/\d/g, d => arabicDigits[d]);
-		}
+	/* ═══════════════════════════════════════════
+	   انیمیشن glow
+	═══════════════════════════════════════════ */
+	function startGlowLoop() {
+		if (state.animFrameId) cancelAnimationFrame(state.animFrameId);
 
-		function hexToRgba(hex, alpha = 1) {
-			const r = parseInt(hex.slice(1, 3), 16);
-			const g = parseInt(hex.slice(3, 5), 16);
-			const b = parseInt(hex.slice(5, 7), 16);
-			return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-		}
+		const t0 = Date.now();
 
-		function hexToRgb(hex) {
-			hex = hex.replace("#", "");
-			return [
-				parseInt(hex.slice(0, 2), 16),
-				parseInt(hex.slice(2, 4), 16),
-				parseInt(hex.slice(4, 6), 16)
-			];
-		}
-
-		function rgbToHex(rgb) {
-			return "#" + rgb.map(v => Math.round(v).toString(16).padStart(2, "0")).join("");
-		}
-
-		function lerpHex(hexA, hexB, t) {
-			const a = hexToRgb(hexA);
-			const b = hexToRgb(hexB);
-			const r = [
-				a[0] + (b[0] - a[0]) * t,
-				a[1] + (b[1] - a[1]) * t,
-				a[2] + (b[2] - a[2]) * t
-			];
-			return rgbToHex(r);
-		}
-
-		function getColorByDays(days) {
-			const green = "#00FF00";
-			const white = "#FFFFFF";
-			const yellow = "#FFFF00";
-			const orange = "#FFA500";
-			const red = "#FF0000";
-
-			if (days >= 100) return green;
-			if (days <= 0) return red;
-
-			const ranges = [
-				{ high: 100, low: 80, highColor: green, lowColor: white },
-				{ high: 80, low: 50, highColor: white, lowColor: yellow },
-				{ high: 50, low: 35, highColor: yellow, lowColor: orange },
-				{ high: 35, low: 0, highColor: orange, lowColor: red }
-			];
-
-			for (let r of ranges) {
-				if (days <= r.high && days >= r.low) {
-					const t = (days - r.low) / (r.high - r.low);
-					return lerpHex(r.lowColor, r.highColor, t);
+		function loop() {
+			if (state.colorMode === 'auto') {
+				const c = getColorByTime();
+				if (c !== state.currentColor) {
+					state.currentColor = c;
+					applyColor(c);
 				}
 			}
 
-			return red;
+			const gi = state.glowIntensity / 100;
+			const pi = state.pulseIntensity / 100;
+			const elapsed = (Date.now() - t0) % 2000 / 2000;
+			const wave = pi > 0 ? Math.sin(elapsed * Math.PI * 2) * 0.5 + 0.5 : 0.5;
+			const eff = gi + pi * 0.4 * wave;
+
+			const c = state.currentColor;
+			clockEl.style.textShadow = [10,20,40,80]
+				.map(b => `0 0 ${b*eff}px ${c}`)
+				.join(',');
+			clockEl.style.color = c;
+
+			state.animFrameId = requestAnimationFrame(loop);
 		}
 
-		function updateClockGlow() {
-			if (colorMode === 'auto') {
-				currentColor = getColorByTime();
-			}
+		loop();
+	}
 
-			const intensity = glowIntensity / 100;
-			const pulse = pulseIntensity / 100;
-			
-			if (pulse > 0) {
-				if (animationFrameId) cancelAnimationFrame(animationFrameId);
-				
-				let startTime = Date.now();
-				
-				function animate() {
-					if (colorMode === 'auto') {
-						currentColor = getColorByTime();
-					}
+	/* ═══════════════════════════════════════════
+	   به‌روزرسانی glow تاریخ
+	═══════════════════════════════════════════ */
+	function updateDateGlow() {
+		const b = 8 * state.dateGlowIntensity / 100;
+		document.querySelectorAll('.date-value').forEach(el => {
+			el.style.textShadow = b > 0 ? `0 0 ${b}px rgba(255,255,255,${state.dateGlowIntensity/100})` : 'none';
+		});
+	}
 
-					const elapsed = Date.now() - startTime;
-					const progress = (elapsed % 2000) / 2000;
-					const pulseValue = Math.sin(progress * Math.PI * 2) * 0.5 + 0.5;
-					
-					const minIntensity = intensity;
-					const maxIntensity = intensity + (pulse * 0.5);
-					const currentIntensity = minIntensity + (maxIntensity - minIntensity) * pulseValue;
-					
-					const blur1 = 10 * currentIntensity;
-					const blur2 = 20 * currentIntensity;
-					const blur3 = 40 * currentIntensity;
-					const blur4 = 80 * currentIntensity;
-					
-					textElem.style.textShadow = `
-						0 0 ${blur1}px ${currentColor},
-						0 0 ${blur2}px ${currentColor},
-						0 0 ${blur3}px ${currentColor},
-						0 0 ${blur4}px ${currentColor}
-					`;
-					
-					updateClockBorder();
-					
-					animationFrameId = requestAnimationFrame(animate);
-				}
-				
-				animate();
-			} else {
-				if (animationFrameId) {
-					cancelAnimationFrame(animationFrameId);
-					animationFrameId = null;
-				}
-				
-				const blur1 = 10 * intensity;
-				const blur2 = 20 * intensity;
-				const blur3 = 40 * intensity;
-				const blur4 = 80 * intensity;
-				
-				textElem.style.textShadow = `
-					0 0 ${blur1}px ${currentColor},
-					0 0 ${blur2}px ${currentColor},
-					0 0 ${blur3}px ${currentColor},
-					0 0 ${blur4}px ${currentColor}
-				`;
-			}
-			
-			textElem.style.color = currentColor;
-			updateClockBorder();
+	/* ═══════════════════════════════════════════
+	   تبدیل تاریخ شمسی
+	═══════════════════════════════════════════ */
+	function toShamsi(d) {
+		const gdm = [0,31,59,90,120,151,181,212,243,273,304,334];
+		let gy = d.getFullYear(), gm = d.getMonth()+1, gd = d.getDate();
+		const jy0 = gy <= 1600 ? 0 : 979;
+		gy -= gy <= 1600 ? 621 : 1600;
+		let days = 365*gy + Math.floor((gy+3)/4) - Math.floor((gy+99)/100)
+				 + Math.floor((gy+399)/400) - 80 + gd + gdm[gm-1];
+		if (gm > 2 && ((gy%4===0&&gy%100!==0)||(gy%400===0))) days++;
+		let jy = jy0 + 33*Math.floor(days/12053);
+		days %= 12053;
+		jy += 4*Math.floor(days/1461);
+		days %= 1461;
+		jy += Math.floor((days-1)/365);
+		if (days > 365) days = (days-1)%365;
+		const jm = days < 186 ? 1+Math.floor(days/31) : 7+Math.floor((days-186)/30);
+		const jd = 1 + (days < 186 ? days%31 : (days-186)%30);
+		const months = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+		const days2 = ['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه','شنبه'];
+		return `${days2[d.getDay()]}، ${P(jd)} ${months[jm-1]} ${P(jy)}`;
+	}
+
+	/* ═══════════════════════════════════════════
+	   تبدیل تاریخ قمری
+	═══════════════════════════════════════════ */
+	function toGhamari(date) {
+		const gy=date.getFullYear(), gm=date.getMonth()+1, gd=date.getDate();
+		const a=Math.floor((14-gm)/12), y=gy+4800-a, m=gm+12*a-3;
+		let jd=gd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
+		const l=jd-1948440+10632-1, n=Math.floor((l-1)/10631);
+		let rem=l-10631*n+354;
+		const jump=Math.floor((10985-rem)/5316)*Math.floor(50*rem/17719)+Math.floor(rem/5670)*Math.floor(43*rem/15238);
+		rem=rem-Math.floor((30-jump)/15)*Math.floor(17719*jump/50)-Math.floor(jump/16)*Math.floor(15238*jump/43)+29;
+		const hm=Math.floor(24*rem/709), hd=rem-Math.floor(709*hm/24), hy=30*n+jump-30;
+		const months=['محرم','صفر','ربيع الأول','ربيع الثاني','جمادى الأولى','جمادى الثانية','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+		const wdays=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+		return `${wdays[date.getDay()]}، ${A(hd)} ${months[hm-1]} ${A(hy)}`;
+	}
+
+	/* ═══════════════════════════════════════════
+	   به‌روزرسانی ساعت (هر ثانیه)
+	═══════════════════════════════════════════ */
+	function updateClock() {
+		const now = new Date();
+		const hh = String(now.getHours()).padStart(2,'0');
+		const mm = String(now.getMinutes()).padStart(2,'0');
+		const ss = String(now.getSeconds()).padStart(2,'0');
+		clockEl.textContent = P(state.showSeconds ? `${hh}:${mm}:${ss}` : `${hh}:${mm}`);
+
+		// تاریخ‌ها: فقط اگر روز عوض شده
+		if (now.getDay() !== state.lastDay) {
+			state.lastDay = now.getDay();
+
+			shamsiEl.textContent = toShamsi(now);
+			const en_days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+			const en_months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+			miladiEl.textContent = `${en_days[now.getDay()]}, ${now.getDate()} ${en_months[now.getMonth()]} ${now.getFullYear()}`;
+			ghamariEl.textContent = toGhamari(now);
+
+			// جمله انگیزشی روزانه
+			const q = dailyQuotes[now.getDay()];
+			quoteText.textContent = q.text;
+			quoteAuthor.textContent = `— ${q.author}`;
 		}
 
-		function updateClockBorder() {
-			clockSection.style.borderColor = currentColor;
-			clockSection.style.boxShadow = `
-				0 0 20px ${hexToRgba(currentColor, 0.5)},
-				inset 0 0 20px ${hexToRgba(currentColor, 0.1)}
-			`;
-			
-			document.querySelectorAll('.control-btn').forEach(btn => {
-				btn.style.borderColor = currentColor;
-				btn.style.color = currentColor;
-				btn.style.boxShadow = `0 0 15px ${hexToRgba(currentColor, 0.5)}`;
-			});
-			
-			if (settingsPanel.classList.contains('active')) {
-				updateSettingsColors();
-			}
+		// روزشمار زندگی
+		const start = new Date('1999-11-10T00:00:00');
+		daysPassedEl.textContent = P(Math.floor((now - start) / 86400000));
+
+		// ثبت‌نام
+		const ci = state.counterGlowIntensity;
+		const regDate = new Date('2026-05-01T00:00:00');
+		const regDays = Math.ceil((regDate - now) / 86400000);
+		if (regDays <= 0) {
+			regBox.innerHTML = '<div class="info-text">تاریخ ثبت‌نام رسیده است! 🎯</div>';
+			regBox.style.cssText = `border-color:#FF0000; box-shadow:0 0 20px rgba(255,0,0,0.5),inset 0 0 20px rgba(255,0,0,0.1)`;
+		} else {
+			const rc = getColorByDays(regDays);
+			regEl.textContent = P(regDays);
+			regEl.style.color = rc;
+			regEl.style.textShadow = `0 0 ${15*ci/100}px ${rc}, 0 0 ${30*ci/100}px ${rc}`;
+			regBox.style.borderColor = rc;
+			regBox.style.boxShadow = `0 0 20px ${hexToRgba(rc,0.5)}, inset 0 0 20px ${hexToRgba(rc,0.1)}`;
 		}
 
-		function updateSettingsColors() {
-			settingsPanel.style.borderColor = currentColor;
-			settingsPanel.style.boxShadow = `0 0 40px ${hexToRgba(currentColor, 0.7)}`;
-			settingsTitle.style.color = currentColor;
-			settingsTitle.style.textShadow = `0 0 15px ${currentColor}`;
-			
-			const labels = settingsPanel.querySelectorAll('.setting-label');
-			labels.forEach(label => {
-				label.style.color = currentColor;
-				label.style.textShadow = `0 0 5px ${currentColor}`;
-			});
-			
-			const sliders = settingsPanel.querySelectorAll('.slider');
-			sliders.forEach(slider => {
-				slider.style.setProperty('--thumb-color', currentColor);
-			});
-			
-			const modeBtns = settingsPanel.querySelectorAll('.mode-btn');
-			modeBtns.forEach(btn => {
-				btn.style.borderColor = hexToRgba(currentColor, 0.3);
-				btn.style.color = currentColor;
-				if (btn.classList.contains('active')) {
-					btn.style.background = hexToRgba(currentColor, 0.3);
-					btn.style.borderColor = currentColor;
-					btn.style.boxShadow = `0 0 10px ${hexToRgba(currentColor, 0.5)}`;
-				}
-			});
-			
-			document.getElementById('closeSettings').style.borderColor = currentColor;
-			document.getElementById('closeSettings').style.color = currentColor;
-			document.getElementById('closeSettings').style.boxShadow = `0 0 15px ${hexToRgba(currentColor, 0.5)}`;
+		// امتحان زبان
+		const examDate = new Date('2026-05-22T00:00:00');
+		const examDays = Math.ceil((examDate - now) / 86400000);
+		if (examDays <= 0) {
+			examBox.innerHTML = '<div class="info-text">امتحان زبان رسیده است! 🎯</div>';
+			examBox.style.cssText = `border-color:#FF0000; box-shadow:0 0 20px rgba(255,0,0,0.5),inset 0 0 20px rgba(255,0,0,0.1)`;
+		} else {
+			const ec = getColorByDays(examDays);
+			examEl.textContent = P(examDays);
+			examEl.style.color = ec;
+			examEl.style.textShadow = `0 0 ${15*ci/100}px ${ec}, 0 0 ${30*ci/100}px ${ec}`;
+			examBox.style.borderColor = ec;
+			examBox.style.boxShadow = `0 0 20px ${hexToRgba(ec,0.5)}, inset 0 0 20px ${hexToRgba(ec,0.1)}`;
 		}
 
-		settingsBtn.addEventListener('click', () => {
-			if (settingsPanel.classList.contains('active')) {
-				settingsPanel.classList.remove('active');
-			} else {
-				settingsPanel.classList.add('active');
-				updateSettingsColors();
-			}
-		});
+		// تایمر دقیق
+		const delay = 1000 - (now.getTime() % 1000) + 15;
+		setTimeout(updateClock, delay);
+	}
 
-		closeSettingsBtn.addEventListener('click', () => {
-			settingsPanel.classList.remove('active');
-		});
+	/* ═══════════════════════════════════════════
+	   مودال‌ها
+	═══════════════════════════════════════════ */
+	function openModal(overlayId) {
+		$('scheduleOverlay').classList.remove('active');
+		$('settingsOverlay').classList.remove('active');
+		$(overlayId).classList.add('active');
+	}
 
-		settingsPanel.addEventListener('click', (e) => {
-			if (e.target === settingsPanel) {
-				settingsPanel.classList.remove('active');
-			}
-		});
+	function closeAllModals() {
+		$('scheduleOverlay').classList.remove('active');
+		$('settingsOverlay').classList.remove('active');
+	}
 
-		function updateDateGlow() {
-			const intensity = dateGlowIntensity / 100;
-			const blur = 8 * intensity;
-			const dateValues = document.querySelectorAll('.date-value');
-			dateValues.forEach(el => {
-				el.style.textShadow = `0 0 ${blur}px rgba(255, 255, 255, ${intensity})`;
-			});
-		}
+	function buildSchedule() {
+		const day = new Date().getDay();
+		const rows = (schedules[day] || schedules[6])
+			.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`)
+			.join('');
+		$('scheduleTable').innerHTML = `<thead><tr><th>زمان</th><th>فعالیت</th></tr></thead><tbody>${rows}</tbody>`;
+	}
 
-		function updateCounterGlow() {
-			const intensity = counterGlowIntensity / 100;
-			const dayPassedValue = daysPassedElem.querySelector('.info-value');
-			const blur = 15 * intensity;
-			dayPassedValue.style.textShadow = `0 0 ${blur}px #00FF00, 0 0 ${blur * 2}px #00FF00`;
-		}
+	$('toggleSchedule').addEventListener('click', () => {
+		if ($('scheduleOverlay').classList.contains('active')) closeAllModals();
+		else { buildSchedule(); openModal('scheduleOverlay'); }
+	});
 
-		function toShamsi(date) {
-			const g2j = (gy, gm, gd) => {
-				const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-				const jy = (gy <= 1600) ? 0 : 979;
-				gy -= (gy <= 1600) ? 621 : 1600;
-				let days = (365 * gy) + (Math.floor((gy + 3) / 4)) - (Math.floor((gy + 99) / 100)) + 
-						   (Math.floor((gy + 399) / 400)) - 80 + gd + g_d_m[gm - 1];
-				if (gm > 2 && ((gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0))) days++;
-				
-				let jy_val = jy + 33 * Math.floor(days / 12053);
-				days %= 12053;
-				jy_val += 4 * Math.floor(days / 1461);
-				days %= 1461;
-				jy_val += Math.floor((days - 1) / 365);
-				if (days > 365) days = (days - 1) % 365;
-				
-				const jm = (days < 186) ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
-				const jd = 1 + ((days < 186) ? (days % 31) : ((days - 186) % 30));
-				
-				return [jy_val, jm, jd];
-			};
-			
-			const [y, m, d] = g2j(date.getFullYear(), date.getMonth() + 1, date.getDate());
-			const months = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 
-							'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
-			const weekDays = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
-			const weekDay = weekDays[date.getDay()];
-			return `${weekDay}، ${toPersianNum(d)} ${months[m - 1]} ${toPersianNum(y)}`;
-		}
+	$('closeSchedule').addEventListener('click', closeAllModals);
 
-		function toGhamari(date) {
-			const gYear = date.getFullYear();
-			const gMonth = date.getMonth() + 1;
-			const gDay = date.getDate();
-			
-			const a = Math.floor((14 - gMonth) / 12);
-			const y = gYear + 4800 - a;
-			const m = gMonth + 12 * a - 3;
-			
-			let jd = gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
-			
-			const l = jd - 1948440 + 10632 - 1;
-			const n = Math.floor((l - 1) / 10631);
-			let remaining = l - 10631 * n + 354;
-			
-			const jump = Math.floor((10985 - remaining) / 5316) * Math.floor(50 * remaining / 17719) + 
-						 Math.floor(remaining / 5670) * Math.floor(43 * remaining / 15238);
-			
-			remaining = remaining - Math.floor((30 - jump) / 15) * Math.floor(17719 * jump / 50) - 
-						Math.floor(jump / 16) * Math.floor(15238 * jump / 43) + 29;
-			
-			const hMonth = Math.floor(24 * remaining / 709);
-			const hDay = remaining - Math.floor(709 * hMonth / 24);
-			const hYear = 30 * n + jump - 30;
-			
-			const months = ['محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الثانية',
-							'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'];
-			const weekDays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-			const weekDay = weekDays[date.getDay()];
-			return `${weekDay}، ${toArabicNum(hDay)} ${months[hMonth - 1]} ${toArabicNum(hYear)}`;
-		}
+	$('scheduleOverlay').addEventListener('click', e => {
+		if (e.target === $('scheduleOverlay')) closeAllModals();
+	});
 
-		function updateClock() {
-			const now = new Date();
-			
-			const hours = String(now.getHours()).padStart(2, "0");
-			const minutes = String(now.getMinutes()).padStart(2, "0");
-			const seconds = String(now.getSeconds()).padStart(2, "0");
-			
-			if (showSeconds) {
-				textElem.textContent = toPersianNum(`${hours}:${minutes}:${seconds}`);
-			} else {
-				textElem.textContent = toPersianNum(`${hours}:${minutes}`);
-			}
+	$('toggleSettings').addEventListener('click', () => {
+		if ($('settingsOverlay').classList.contains('active')) closeAllModals();
+		else openModal('settingsOverlay');
+	});
 
-			if (!window.datesSet || now.getHours() === 0 && now.getMinutes() === 0) {
-				document.getElementById('shamsiDate').textContent = toShamsi(now);
-				
-				const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-				const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-							   'July', 'August', 'September', 'October', 'November', 'December'];
-				const weekDay = weekDays[now.getDay()];
-				const month = months[now.getMonth()];
-				document.getElementById('miladiDate').textContent = `${weekDay}, ${now.getDate()} ${month} ${now.getFullYear()}`;
-				
-				document.getElementById('ghamariDate').textContent = toGhamari(now);
-				window.datesSet = true;
-			}
+	$('closeSettings').addEventListener('click', closeAllModals);
 
-			const startDate = new Date("1999-11-10T00:00:00");
-			const daysPassed = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-			daysPassedElem.querySelector('.info-value').textContent = toPersianNum(daysPassed);
+	$('settingsOverlay').addEventListener('click', e => {
+		if (e.target === $('settingsOverlay')) closeAllModals();
+	});
 
-			const registrationDate = new Date("2026-03-01T00:00:00");
-			const daysToRegistration = Math.ceil((registrationDate - now) / (1000 * 60 * 60 * 24));
+	/* ═══════════════════════════════════════════
+	   کنترل‌های تنظیمات
+	═══════════════════════════════════════════ */
+	$('toggleSeconds').addEventListener('click', () => {
+		state.showSeconds = !state.showSeconds;
+		$('toggleSeconds').style.opacity = state.showSeconds ? '1' : '0.5';
+	});
+	$('toggleSeconds').style.opacity = '0.5';
 
-			if (daysToRegistration <= 0) {
-				daysToExamElem.innerHTML = '<div class="info-text">تاریخ ثبت نام رسیده است! 🎯</div>';
-				daysToExamElem.style.borderColor = '#FF0000';
-				daysToExamElem.style.boxShadow = `0 0 20px ${hexToRgba('#FF0000', 0.5)}, inset 0 0 20px ${hexToRgba('#FF0000', 0.1)}`;
-			} else {
-				const color = getColorByDays(daysToRegistration);
-				daysToExamElem.innerHTML = `<div class="info-text">تا تاریخ ثبت نام <span class="info-value" style="color:${color}; text-shadow: 0 0 ${15 * counterGlowIntensity / 100}px ${color}, 0 0 ${30 * counterGlowIntensity / 100}px ${color};">${toPersianNum(daysToRegistration)}</span> روز مانده است</div>`;
-				daysToExamElem.style.borderColor = color;
-				daysToExamElem.style.boxShadow = `0 0 20px ${hexToRgba(color, 0.5)}, inset 0 0 20px ${hexToRgba(color, 0.1)}`;
-			}
+	$('glowIntensity').addEventListener('input', e => {
+		state.glowIntensity = +e.target.value;
+	});
 
-			const examDate = new Date("2026-03-26T00:00:00");
-			const daysToExam = Math.ceil((examDate - now) / (1000 * 60 * 60 * 24));
+	$('pulseIntensity').addEventListener('input', e => {
+		state.pulseIntensity = +e.target.value;
+	});
 
-			if (daysToExam <= 0) {
-				daysToExam2Elem.innerHTML = '<div class="info-text">امتحان زبان رسیده است! 🎯</div>';
-				daysToExam2Elem.style.borderColor = '#FF0000';
-				daysToExam2Elem.style.boxShadow = `0 0 20px ${hexToRgba('#FF0000', 0.5)}, inset 0 0 20px ${hexToRgba('#FF0000', 0.1)}`;
-			} else {
-				const color2 = getColorByDays(daysToExam);
-				daysToExam2Elem.innerHTML = `<div class="info-text">تا امتحان زبان <span class="info-value" style="color:${color2}; text-shadow: 0 0 ${15 * counterGlowIntensity / 100}px ${color2}, 0 0 ${30 * counterGlowIntensity / 100}px ${color2};">${toPersianNum(daysToExam)}</span> روز مانده است</div>`;
-				daysToExam2Elem.style.borderColor = color2;
-				daysToExam2Elem.style.boxShadow = `0 0 20px ${hexToRgba(color2, 0.5)}, inset 0 0 20px ${hexToRgba(color2, 0.1)}`;
-			}
-
-			setTimeout(updateClock, 1000 - now.getTime() % 1000 + 20);
-		}
-
-		toggleBtn.addEventListener('click', () => {
-			showSeconds = !showSeconds;
-			toggleBtn.style.opacity = showSeconds ? '1' : '0.5';
-			updateClock();
-		});
-
-		toggleBtn.style.opacity = '0.5';
-
-		glowSlider.addEventListener('input', (e) => {
-			glowIntensity = e.target.value;
-			updateClockGlow();
-		});
-
-		pulseSlider.addEventListener('input', (e) => {
-			pulseIntensity = e.target.value;
-			updateClockGlow();
-		});
-
-		dateGlowSlider.addEventListener('input', (e) => {
-			dateGlowIntensity = e.target.value;
-			updateDateGlow();
-		});
-
-		counterGlowSlider.addEventListener('input', (e) => {
-			counterGlowIntensity = e.target.value;
-			updateCounterGlow();
-			updateClock();
-		});
-
-		colorOptions.forEach(option => {
-			option.addEventListener('click', () => {
-				if (colorMode === 'manual') {
-					colorOptions.forEach(opt => opt.classList.remove('active'));
-					option.classList.add('active');
-					currentColor = option.getAttribute('data-color');
-					updateClockGlow();
-				}
-			});
-		});
-
-		autoModeBtn.addEventListener('click', () => {
-			colorMode = 'auto';
-			autoModeBtn.classList.add('active');
-			manualModeBtn.classList.remove('active');
-			colorOptionsDiv.style.opacity = '0.5';
-			colorOptionsDiv.style.pointerEvents = 'none';
-			updateClockGlow();
-		});
-
-		manualModeBtn.addEventListener('click', () => {
-			colorMode = 'manual';
-			manualModeBtn.classList.add('active');
-			autoModeBtn.classList.remove('active');
-			colorOptionsDiv.style.opacity = '1';
-			colorOptionsDiv.style.pointerEvents = 'auto';
-			updateClockGlow();
-		});
-
-		if (colorMode === 'auto') {
-			colorOptionsDiv.style.opacity = '0.5';
-			colorOptionsDiv.style.pointerEvents = 'none';
-		}
-
-		updateClockGlow();
+	$('dateGlowIntensity').addEventListener('input', e => {
+		state.dateGlowIntensity = +e.target.value;
 		updateDateGlow();
-		updateCounterGlow();
-		updateClock();
+	});
+
+	$('counterGlowIntensity').addEventListener('input', e => {
+		state.counterGlowIntensity = +e.target.value;
+	});
+
+	$('autoModeBtn').addEventListener('click', () => {
+		state.colorMode = 'auto';
+		$('autoModeBtn').classList.add('active');
+		$('manualModeBtn').classList.remove('active');
+		$('colorOptions').style.opacity = '0.5';
+		$('colorOptions').style.pointerEvents = 'none';
+	});
+
+	$('manualModeBtn').addEventListener('click', () => {
+		state.colorMode = 'manual';
+		$('manualModeBtn').classList.add('active');
+		$('autoModeBtn').classList.remove('active');
+		$('colorOptions').style.opacity = '1';
+		$('colorOptions').style.pointerEvents = 'auto';
+	});
+
+	document.querySelectorAll('.color-option').forEach(opt => {
+		opt.addEventListener('click', () => {
+			if (state.colorMode !== 'manual') return;
+			document.querySelectorAll('.color-option').forEach(o => o.classList.remove('active'));
+			opt.classList.add('active');
+			state.currentColor = opt.dataset.color;
+			applyColor(state.currentColor);
+		});
+	});
+
+	/* ═══════════════════════════════════════════
+	   راه‌اندازی
+	═══════════════════════════════════════════ */
+	// رنگ اولیه
+	if (state.colorMode === 'auto') {
+		state.currentColor = getColorByTime();
+	}
+	applyColor(state.currentColor);
+	startGlowLoop();
+	updateDateGlow();
+	updateClock();
 	</script>
 </body>
 </html>
