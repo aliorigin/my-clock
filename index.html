@@ -223,6 +223,13 @@
 			animation: fadeInUp 0.6s ease-out 0.3s backwards;
 		}
 
+		.info-section-row2 {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 15px;
+			animation: fadeInUp 0.6s ease-out 0.4s backwards;
+		}
+
 		.info-box {
 			background: rgba(0,0,0,0.85);
 			border: 2px solid;
@@ -244,6 +251,28 @@
 			box-shadow: 
 				0 0 20px rgba(0,255,0,0.5),
 				inset 0 0 20px rgba(0,255,0,0.1);
+		}
+
+		#daysAlone {
+			border-color: #9B30FF;
+			box-shadow: 
+				0 0 20px rgba(155,48,255,0.5),
+				inset 0 0 20px rgba(155,48,255,0.1);
+		}
+
+		#daysAlone .info-value {
+			color: #BF7FFF;
+		}
+
+		#daysBack {
+			border-color: #1E90FF;
+			box-shadow: 
+				0 0 20px rgba(30,144,255,0.5),
+				inset 0 0 20px rgba(30,144,255,0.1);
+		}
+
+		#daysBack .info-value {
+			color: #6AB8FF;
 		}
 
 		.info-text {
@@ -550,7 +579,8 @@
 				white-space: normal;
 			}
 
-			.info-section {
+			.info-section,
+			.info-section-row2 {
 				grid-template-columns: 1fr;
 				gap: 10px;
 			}
@@ -615,7 +645,7 @@
 			</div>
 		</div>
 
-		<!-- روزشمارها -->
+		<!-- روزشمارها - ردیف اول -->
 		<div class="info-section">
 			<div id="daysPassed" class="info-box">
 				<div class="info-text">امروز <span class="info-value" id="daysPassedVal">۰</span> امین روزیه که زندم</div>
@@ -625,6 +655,19 @@
 			</div>
 			<div id="daysToExam2" class="info-box">
 				<div class="info-text">تا امتحان زبان <span class="info-value" id="examVal">۰</span> روز مانده</div>
+			</div>
+		</div>
+
+		<!-- روزشمارها - ردیف دوم -->
+		<div class="info-section-row2">
+			<div id="daysAlone" class="info-box">
+				<div class="info-text">امروز <span class="info-value" id="aloneVal">۰</span> امین روزیه که تنهام</div>
+			</div>
+			<div id="daysBack" class="info-box">
+				<div class="info-text">امروز <span class="info-value" id="backVal">۰</span> امین روزیه که برگشتم</div>
+			</div>
+			<div id="daysToChapter" class="info-box">
+				<div class="info-text">تا پایان چپتر اول <span class="info-value" id="chapterVal">۰</span> روز مانده</div>
 			</div>
 		</div>
 	</div>
@@ -746,6 +789,10 @@
 	const examEl       = $('examVal');
 	const regBox       = $('daysToExam');
 	const examBox      = $('daysToExam2');
+	const aloneEl      = $('aloneVal');
+	const backEl       = $('backVal');
+	const chapterEl    = $('chapterVal');
+	const chapterBox   = $('daysToChapter');
 
 	/* ═══════════════════════════════════════════
 	   ابزارها
@@ -934,7 +981,7 @@
 
 		// ثبت‌نام
 		const ci = state.counterGlowIntensity;
-		const regDate = new Date('2026-05-01T00:00:00');
+		const regDate = new Date('2026-05-04T00:00:00');
 		const regDays = Math.ceil((regDate - now) / 86400000);
 		if (regDays <= 0) {
 			regBox.innerHTML = '<div class="info-text">تاریخ ثبت‌نام رسیده است! 🎯</div>';
@@ -949,7 +996,7 @@
 		}
 
 		// امتحان زبان
-		const examDate = new Date('2026-05-22T00:00:00');
+		const examDate = new Date('2026-05-21T00:00:00');
 		const examDays = Math.ceil((examDate - now) / 86400000);
 		if (examDays <= 0) {
 			examBox.innerHTML = '<div class="info-text">امتحان زبان رسیده است! 🎯</div>';
@@ -961,6 +1008,33 @@
 			examEl.style.textShadow = `0 0 ${15*ci/100}px ${ec}, 0 0 ${30*ci/100}px ${ec}`;
 			examBox.style.borderColor = ec;
 			examBox.style.boxShadow = `0 0 20px ${hexToRgba(ec,0.5)}, inset 0 0 20px ${hexToRgba(ec,0.1)}`;
+		}
+
+		// روزشمار تنهایی (بنفش - از 19 ژانویه 2026)
+		const aloneStart = new Date('2026-01-18T00:00:00');
+		const aloneDays = Math.floor((now - aloneStart) / 86400000);
+		aloneEl.textContent = P(Math.max(0, aloneDays));
+		aloneEl.style.textShadow = `0 0 ${15*ci/100}px #BF7FFF, 0 0 ${30*ci/100}px #9B30FF`;
+
+		// روزشمار برگشت (آبی - از 3 می 2026)
+		const backStart = new Date('2026-05-02T00:00:00');
+		const backDays = Math.floor((now - backStart) / 86400000);
+		backEl.textContent = P(Math.max(0, backDays));
+		backEl.style.textShadow = `0 0 ${15*ci/100}px #6AB8FF, 0 0 ${30*ci/100}px #1E90FF`;
+
+		// روزشمار چپتر اول (متغیر - تا 28 مارچ 2027)
+		const chapterEnd = new Date('2027-03-28T00:00:00');
+		const chapterDays = Math.ceil((chapterEnd - now) / 86400000);
+		if (chapterDays <= 0) {
+			chapterBox.innerHTML = '<div class="info-text">چپتر اول به پایان رسید! 🏁</div>';
+			chapterBox.style.cssText = `border-color:#FF0000; box-shadow:0 0 20px rgba(255,0,0,0.5),inset 0 0 20px rgba(255,0,0,0.1)`;
+		} else {
+			const cc = getColorByDays(chapterDays);
+			chapterEl.textContent = P(chapterDays);
+			chapterEl.style.color = cc;
+			chapterEl.style.textShadow = `0 0 ${15*ci/100}px ${cc}, 0 0 ${30*ci/100}px ${cc}`;
+			chapterBox.style.borderColor = cc;
+			chapterBox.style.boxShadow = `0 0 20px ${hexToRgba(cc,0.5)}, inset 0 0 20px ${hexToRgba(cc,0.1)}`;
 		}
 
 		// تایمر دقیق
