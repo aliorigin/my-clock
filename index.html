@@ -1017,7 +1017,7 @@
 		aloneEl.style.textShadow = `0 0 ${15*ci/100}px #BF7FFF, 0 0 ${30*ci/100}px #9B30FF`;
 
 		// روزشمار برگشت (آبی - از 3 می 2026)
-		const backStart = new Date('2026-05-10T00:00:00');
+		const backStart = new Date('2026-05-7T00:00:00');
 		const backDays = Math.floor((now - backStart) / 86400000);
 		backEl.textContent = P(Math.max(0, backDays));
 		backEl.style.textShadow = `0 0 ${15*ci/100}px #6AB8FF, 0 0 ${30*ci/100}px #1E90FF`;
