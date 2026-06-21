@@ -512,6 +512,52 @@
 			box-shadow: 0 0 22px var(--color-alpha50);
 		}
 
+		.schedule-nav-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			direction: ltr;
+			margin-top: 18px;
+		}
+
+		.schedule-nav-row .close-btn {
+			margin: 0;
+		}
+
+		.nav-btn {
+			font-size: 20px;
+		}
+
+		.day-running-badge {
+			display: inline-block;
+			margin-right: 8px;
+			font-size: 0.6em;
+			color: #00FF00;
+			vertical-align: middle;
+		}
+
+		.study-priorities-box {
+			margin-top: 16px;
+			padding: 14px 16px;
+			background: rgba(255,255,255,0.04);
+			border-radius: 12px;
+			border: 1px solid var(--color-alpha20);
+		}
+
+		.study-priorities-box ul {
+			list-style: none;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px 16px;
+			margin-top: 8px;
+			font-size: clamp(11px, 1.8vw, 14px);
+		}
+
+		.study-priorities-box li::before {
+			content: '◆ ';
+			color: var(--color);
+		}
+
 		/* ─── جدول برنامه ─── */
 		.schedule-table {
 			width: 100%;
@@ -684,7 +730,11 @@
 		<div class="modal-panel wide" id="schedulePanel">
 			<h2 class="modal-title" id="scheduleTitle">برنامه روزانه</h2>
 			<table class="schedule-table" id="scheduleTable"></table>
-			<button class="close-btn" id="closeSchedule">✕</button>
+			<div class="schedule-nav-row">
+				<button class="close-btn nav-btn" id="leftArrowBtn" title="روز بعد">←</button>
+				<button class="close-btn" id="closeSchedule">✕</button>
+				<button class="close-btn nav-btn" id="rightArrowBtn" title="روز قبل">→</button>
+			</div>
 		</div>
 	</div>
 
@@ -751,28 +801,40 @@
 		morning_routine: '05:30 - 05:45'
 	};
 
+	const runningDays = ['Saturday', 'Tuesday', 'Thursday'];
+
+	const studyPriorities = [
+		'تست (۳ ساعت)',
+		'شغایبن (۲ ساعت)',
+		'لغت (۲ ساعت)',
+		'دویچ ماخت (۲ ساعت)',
+		'کتاب اسپکتروم (۲ ساعت)',
+		'گرامر فعال (۱ ساعت)'
+	];
+
 	const activityNames = {
 		running: 'دویدن',
-		shower_breakfast: 'دوش + صبحانه',
+		shower: 'دوش',
+		breakfast: 'صبحانه',
 		morning_routine: 'روتین صبحگاهی',
+		leave_home: 'خروج از خانه',
+		return_home: 'برگشت به خانه',
+		university: 'دانشگاه',
 		'Deutsch Macht': 'دویچ ماخت',
 		'Spectrum Book': 'کتاب اسپکتروم',
 		'Test': 'تست',
 		'Shaghayebn': 'شغایبن',
-		'Shaghayebn_2': 'شغایبن (۲)',
 		'Vocabulary': 'لغت',
 		'Active Grammar': 'گرامر فعال',
 		'Review': 'مرور',
-		'Sleep_Preparation': 'آماده‌سازی خواب',
-		university: 'دانشگاه',
-		break: 'استراحت',
-		return_break: 'استراحت بعد از برگشت'
+		'Sleep Preparation': 'آماده‌سازی خواب'
 	};
 
 	const weeklySchedule = {
 		Saturday: {
 			running: '05:45 - 07:15',
-			shower_breakfast: '07:15 - 08:00',
+			shower: '07:15 - 07:30',
+			breakfast: '07:30 - 08:00',
 			'Deutsch Macht': '08:00 - 10:00',
 			'Spectrum Book': '10:00 - 12:00',
 			'Test': '12:00 - 15:00',
@@ -780,82 +842,99 @@
 			'Vocabulary': '17:00 - 19:00',
 			'Active Grammar': '19:00 - 20:00',
 			'Review': '20:00 - 21:30',
-			'Sleep_Preparation': '21:30 - 22:00'
+			'Sleep Preparation': '21:30 - 22:00'
 		},
 		Sunday: {
 			morning_routine: '05:30 - 05:45',
-			'Deutsch Macht': '05:45 - 07:45',
-			'Shaghayebn': '07:45 - 09:45',
-			'Vocabulary': '09:45 - 11:45',
-			'Spectrum Book': '11:45 - 13:45',
-			'Shaghayebn_2': '13:45 - 15:45',
-			'Active Grammar': '15:45 - 16:45',
-			'Test': '16:45 - 18:45',
-			'Review': '18:45 - 21:30',
-			'Sleep_Preparation': '21:30 - 22:00'
+			shower: '05:45 - 06:00',
+			breakfast: '06:00 - 06:30',
+			'Test': '06:30 - 09:30',
+			'Shaghayebn': '09:30 - 11:30',
+			'Vocabulary': '11:30 - 13:30',
+			'Deutsch Macht': '13:30 - 15:30',
+			'Spectrum Book': '15:30 - 17:30',
+			'Active Grammar': '17:30 - 18:30',
+			'Review': '18:30 - 21:30',
+			'Sleep Preparation': '21:30 - 22:00'
 		},
 		Monday: {
-			running: '05:45 - 07:15',
-			shower_breakfast: '07:15 - 07:45',
-			'Deutsch Macht': '07:45 - 08:45',
+			morning_routine: '05:30 - 05:45',
+			shower: '05:45 - 06:00',
+			breakfast: '06:00 - 06:30',
+			'Test': '06:30 - 08:30',
+			leave_home: '08:45',
 			university: '09:30 - 12:30',
-			break: '12:30 - 13:15',
+			return_home: '12:30 - 13:15',
 			'Spectrum Book': '13:15 - 15:15',
-			'Test': '15:15 - 17:15',
-			'Shaghayebn': '17:15 - 19:15',
-			'Vocabulary': '19:15 - 20:15',
+			'Shaghayebn': '15:15 - 17:15',
+			'Vocabulary': '17:15 - 19:15',
+			'Deutsch Macht': '19:15 - 20:15',
 			'Active Grammar': '20:15 - 21:15',
-			'Sleep_Preparation': '21:30 - 22:00'
+			'Sleep Preparation': '21:30 - 22:00'
 		},
 		Tuesday: {
-			morning_routine: '05:30 - 05:45',
-			'Deutsch Macht': '05:45 - 07:45',
-			'Spectrum Book': '07:45 - 09:45',
-			'Shaghayebn': '09:45 - 11:45',
-			'Vocabulary': '11:45 - 13:45',
-			'Active Grammar': '13:45 - 15:45',
-			'Test': '15:45 - 17:45',
-			'Review': '17:45 - 19:45',
-			'Sleep_Preparation': '21:30 - 22:00'
+			running: '05:45 - 07:15',
+			shower: '07:15 - 07:30',
+			breakfast: '07:30 - 08:00',
+			'Deutsch Macht': '08:00 - 10:00',
+			'Spectrum Book': '10:00 - 12:00',
+			'Test': '12:00 - 15:00',
+			'Shaghayebn': '15:00 - 17:00',
+			'Vocabulary': '17:00 - 19:00',
+			'Active Grammar': '19:00 - 20:00',
+			'Review': '20:00 - 21:30',
+			'Sleep Preparation': '21:30 - 22:00'
 		},
 		Wednesday: {
 			morning_routine: '05:30 - 05:45',
-			'Deutsch Macht': '05:45 - 06:30',
-			'Spectrum Book': '06:30 - 08:00',
+			shower: '05:45 - 06:00',
+			breakfast: '06:00 - 06:30',
+			'Deutsch Macht': '06:30 - 08:00',
+			leave_home: '08:45',
 			university: '09:30 - 14:00',
-			return_break: '14:00 - 14:45',
-			'Test': '14:45 - 16:45',
-			'Shaghayebn': '16:45 - 18:45',
-			'Vocabulary': '18:45 - 20:45',
-			'Sleep_Preparation': '21:30 - 22:00'
+			return_home: '14:00 - 14:45',
+			'Test': '14:45 - 17:45',
+			'Shaghayebn': '17:45 - 19:45',
+			'Vocabulary': '19:45 - 21:15',
+			'Sleep Preparation': '21:30 - 22:00'
 		},
 		Thursday: {
 			running: '05:45 - 07:15',
-			shower_breakfast: '07:15 - 08:00',
+			shower: '07:15 - 07:30',
+			breakfast: '07:30 - 08:00',
 			'Deutsch Macht': '08:00 - 10:00',
-			'Test': '10:00 - 12:00',
-			'Spectrum Book': '12:00 - 14:00',
-			'Shaghayebn': '14:00 - 16:00',
-			'Vocabulary': '16:00 - 18:00',
-			'Active Grammar': '18:00 - 19:00',
-			'Review': '19:00 - 21:30',
-			'Sleep_Preparation': '21:30 - 22:00'
+			'Spectrum Book': '10:00 - 12:00',
+			'Test': '12:00 - 15:00',
+			'Shaghayebn': '15:00 - 17:00',
+			'Vocabulary': '17:00 - 19:00',
+			'Active Grammar': '19:00 - 20:00',
+			'Review': '20:00 - 21:30',
+			'Sleep Preparation': '21:30 - 22:00'
 		},
 		Friday: {
 			morning_routine: '05:30 - 05:45',
-			'Deutsch Macht': '05:45 - 07:45',
+			shower: '05:45 - 06:00',
+			breakfast: '06:00 - 06:30',
+			'Test': '06:30 - 08:30',
+			leave_home: '08:45',
 			university: '09:30 - 11:00',
+			return_home: '11:00 - 11:45',
 			'Spectrum Book': '11:45 - 13:45',
 			'Shaghayebn': '13:45 - 15:45',
 			'Vocabulary': '15:45 - 17:45',
-			'Test': '17:45 - 19:45',
-			'Review': '19:45 - 21:30',
-			'Sleep_Preparation': '21:30 - 22:00'
+			'Deutsch Macht': '17:45 - 19:45',
+			'Active Grammar': '19:45 - 20:45',
+			'Review': '20:45 - 21:30',
+			'Sleep Preparation': '21:30 - 22:00'
 		}
 	};
 
 	// نگاشت شماره روز JS (۰=یکشنبه) به نام روز در weeklySchedule
 	const jsDayToName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+	const persianDayNames = {
+		Sunday: 'یکشنبه', Monday: 'دوشنبه', Tuesday: 'سه‌شنبه',
+		Wednesday: 'چهارشنبه', Thursday: 'پنج‌شنبه', Friday: 'جمعه', Saturday: 'شنبه'
+	};
 
 	function toPersianTime(t) {
 		return P(t);
@@ -865,12 +944,17 @@
 		return str.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 	}
 
+	// زمان‌هایی که فقط یک نقطه‌اند (مثل leave_home) را به صورت بازه فرض نکن، فقط برای ترتیب استفاده می‌شود
+	function timeKeyForSort(t) {
+		return toLatinDigits(t.split(' - ')[0]);
+	}
+
 	function getDayRows(dayIndex) {
 		const dayName = jsDayToName[dayIndex];
 		const day = weeklySchedule[dayName] || weeklySchedule['Saturday'];
 		return Object.entries(day)
 			.map(([key, time]) => [time, toPersianTime(time), activityNames[key] || key])
-			.sort((a, b) => toLatinDigits(a[0]).localeCompare(toLatinDigits(b[0])))
+			.sort((a, b) => timeKeyForSort(a[0]).localeCompare(timeKeyForSort(b[0])))
 			.map(([, ptime, name]) => [ptime, name]);
 	}
 
@@ -886,7 +970,8 @@
 		dateGlowIntensity: 56,
 		counterGlowIntensity: 8,
 		animFrameId: null,
-		lastDay: -1
+		lastDay: -1,
+		scheduleDayIndex: null
 	};
 
 	/* ═══════════════════════════════════════════
@@ -1175,8 +1260,19 @@
 		$('settingsOverlay').classList.remove('active');
 	}
 
-	function buildSchedule() {
-		const dayIndex = new Date().getDay();
+	function buildSchedule(dayIndex) {
+		if (dayIndex === undefined) dayIndex = new Date().getDay();
+		dayIndex = ((dayIndex % 7) + 7) % 7; // wrap 0-6
+		state.scheduleDayIndex = dayIndex;
+
+		const dayName = jsDayToName[dayIndex];
+		const isToday = dayIndex === new Date().getDay();
+		const isRunningDay = runningDays.includes(dayName);
+
+		$('scheduleTitle').innerHTML =
+			`برنامه روز ${persianDayNames[dayName]}${isToday ? ' (امروز)' : ''}` +
+			(isRunningDay ? ' <span class="day-running-badge">🏃</span>' : '');
+
 		const rows = getDayRows(dayIndex)
 			.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`)
 			.join('');
@@ -1191,24 +1287,38 @@
 
 		$('scheduleTable').innerHTML = `<thead><tr><th>زمان</th><th>فعالیت</th></tr></thead><tbody>${rows}</tbody>`;
 
-		const existingSleepInfo = $('schedulePanel').querySelector('.sleep-info');
-		if (existingSleepInfo) existingSleepInfo.remove();
+		$('schedulePanel').querySelectorAll('.sleep-info, .study-priorities-box').forEach(el => el.remove());
 
 		const sleepDiv = document.createElement('div');
 		sleepDiv.className = 'sleep-info';
 		sleepDiv.innerHTML = sleepInfo;
 		$('scheduleTable').insertAdjacentElement('beforebegin', sleepDiv);
+
+		const prioritiesDiv = document.createElement('div');
+		prioritiesDiv.className = 'study-priorities-box';
+		prioritiesDiv.innerHTML = `<strong style="color:var(--color);">📌 اولویت‌های مطالعه:</strong><ul>${studyPriorities.map(p => `<li>${p}</li>`).join('')}</ul>`;
+		$('scheduleTable').insertAdjacentElement('afterend', prioritiesDiv);
 	}
 
 	$('toggleSchedule').addEventListener('click', () => {
 		if ($('scheduleOverlay').classList.contains('active')) closeAllModals();
-		else { buildSchedule(); openModal('scheduleOverlay'); }
+		else { buildSchedule(new Date().getDay()); openModal('scheduleOverlay'); }
 	});
 
 	$('closeSchedule').addEventListener('click', closeAllModals);
 
 	$('scheduleOverlay').addEventListener('click', e => {
 		if (e.target === $('scheduleOverlay')) closeAllModals();
+	});
+
+	// فلش راست = روز قبل (مثلاً اگر امروز یکشنبه، فلش راست شنبه را نشان می‌دهد)
+	$('rightArrowBtn').addEventListener('click', () => {
+		buildSchedule(state.scheduleDayIndex - 1);
+	});
+
+	// فلش چپ = روز بعد (مثلاً اگر امروز یکشنبه، فلش چپ دوشنبه را نشان می‌دهد)
+	$('leftArrowBtn').addEventListener('click', () => {
+		buildSchedule(state.scheduleDayIndex + 1);
 	});
 
 	$('toggleSettings').addEventListener('click', () => {
