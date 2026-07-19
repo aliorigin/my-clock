@@ -697,7 +697,7 @@
 				<div class="info-text">امروز <span class="info-value" id="daysPassedVal">۰</span> امین روزیه که زندم</div>
 			</div>
 			<div id="daysToExam" class="info-box">
-				<div class="info-text">تا تاریخ ثبت‌نام <span class="info-value" id="regVal">۰</span> روز مانده</div>
+				<div class="info-text">تا شروع سال ۲۰۲۷ <span class="info-value" id="regVal">۰</span> روز مانده</div>
 			</div>
 			<div id="daysToExam2" class="info-box">
 				<div class="info-text">تا امتحان زبان <span class="info-value" id="examVal">۰</span> روز مانده</div>
@@ -1183,12 +1183,12 @@
 		const start = new Date('1999-11-10T00:00:00');
 		daysPassedEl.textContent = P(Math.floor((now - start) / 86400000));
 
-		// ثبت‌نام
+		// روزشمار تا شروع سال ۲۰۲۷
 		const ci = state.counterGlowIntensity;
-		const regDate = new Date('2026-07-01T00:00:00');
+		const regDate = new Date('2027-01-01T00:00:00');
 		const regDays = Math.ceil((regDate - now) / 86400000);
 		if (regDays <= 0) {
-			regBox.innerHTML = '<div class="info-text">تاریخ ثبت‌نام رسیده است! 🎯</div>';
+			regBox.innerHTML = '<div class="info-text">سال ۲۰۲۷ آغاز شد! 🎉</div>';
 			regBox.style.cssText = `border-color:#FF0000; box-shadow:0 0 20px rgba(255,0,0,0.5),inset 0 0 20px rgba(255,0,0,0.1)`;
 		} else {
 			const rc = getColorByDays(regDays);
@@ -1200,7 +1200,7 @@
 		}
 
 		// امتحان زبان
-		const examDate = new Date('2026-07-16T00:00:00');
+		const examDate = new Date('2026-08-30T00:00:00');
 		const examDays = Math.ceil((examDate - now) / 86400000);
 		if (examDays <= 0) {
 			examBox.innerHTML = '<div class="info-text">امتحان زبان رسیده است! 🎯</div>';
@@ -1221,7 +1221,7 @@
 		aloneEl.style.textShadow = `0 0 ${15*ci/100}px #BF7FFF, 0 0 ${30*ci/100}px #9B30FF`;
 
 		// روزشمار برگشت (آبی - از 3 می 2026)
-		const backStart = new Date('2026-06-19T00:00:00');
+		const backStart = new Date('2026-07-17T00:00:00');
 		const backDays = Math.floor((now - backStart) / 86400000);
 		backEl.textContent = P(Math.max(0, backDays));
 		backEl.style.textShadow = `0 0 ${15*ci/100}px #6AB8FF, 0 0 ${30*ci/100}px #1E90FF`;
