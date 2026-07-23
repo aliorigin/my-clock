@@ -798,138 +798,38 @@
 	const sleepSchedule = {
 		sleep_time: '22:00',
 		wake_time: '05:30',
-		morning_routine: '05:30 - 05:45'
+		morning_routine: '05:30 - 06:00'
 	};
 
-	const runningDays = ['Saturday', 'Tuesday', 'Thursday'];
-
 	const studyPriorities = [
-		'تست (۳ ساعت)',
-		'شغایبن (۲ ساعت)',
+		'اشتارتن ویا (۲ ساعت)',
 		'لغت (۲ ساعت)',
 		'دویچ ماخت (۲ ساعت)',
 		'کتاب اسپکتروم (۲ ساعت)',
-		'گرامر فعال (۱ ساعت)'
+		'تمرین گرامر (۱.۵ ساعت)',
+		'کتاب طاقچه (۱ ساعت)'
 	];
 
-	const activityNames = {
-		running: 'دویدن',
-		shower: 'دوش',
-		breakfast: 'صبحانه',
-		morning_routine: 'روتین صبحگاهی',
-		leave_home: 'خروج از خانه',
-		return_home: 'برگشت به خانه',
-		university: 'دانشگاه',
-		'Deutsch Macht': 'دویچ ماخت',
-		'Spectrum Book': 'کتاب اسپکتروم',
-		'Test': 'تست',
-		'Shaghayebn': 'شغایبن',
-		'Vocabulary': 'لغت',
-		'Active Grammar': 'گرامر فعال',
-		'Review': 'مرور',
-		'Sleep Preparation': 'آماده‌سازی خواب'
-	};
+	// برنامه روزانه یکسان - هر روز هفته دقیقاً همین برنامه اجرا می‌شود
+	const dailySchedule = [
+		['05:30 - 06:00', 'نرمش + دوش + مسواک'],
+		['06:00 - 06:30', 'صبحانه'],
+		['06:30 - 08:30', 'دوره دویچ ماخت'],
+		['08:45 - 10:45', 'کتاب اسپکتروم'],
+		['11:00 - 13:00', 'اشتارتن ویا'],
+		['13:00 - 13:45', 'ناهار'],
+		['13:45 - 14:45', 'کتاب طاقچه'],
+		['14:45 - 15:45', 'یوتیوب سمی دویچ'],
+		['16:00 - 17:30', 'تمرین گرامر'],
+		['17:30 - 18:30', 'کتاب‌های اشپغشن و هوغن'],
+		['18:30 - 19:15', 'شام'],
+		['19:15 - 21:15', 'لغت'],
+		['21:15 - 21:30', 'کتاب توسعه فردی'],
+		['21:30 - 21:35', 'دوش کوتاه'],
+		['21:35 - 22:00', 'کتاب فلسفه (تا خواب)']
+	];
 
-	const weeklySchedule = {
-		Saturday: {
-			running: '05:45 - 07:15',
-			shower: '07:15 - 07:30',
-			breakfast: '07:30 - 08:00',
-			'Deutsch Macht': '08:00 - 10:00',
-			'Spectrum Book': '10:00 - 12:00',
-			'Test': '12:00 - 15:00',
-			'Shaghayebn': '15:00 - 17:00',
-			'Vocabulary': '17:00 - 19:00',
-			'Active Grammar': '19:00 - 20:00',
-			'Review': '20:00 - 21:30',
-			'Sleep Preparation': '21:30 - 22:00'
-		},
-		Sunday: {
-			morning_routine: '05:30 - 05:45',
-			shower: '05:45 - 06:00',
-			breakfast: '06:00 - 06:30',
-			'Test': '06:30 - 09:30',
-			'Shaghayebn': '09:30 - 11:30',
-			'Vocabulary': '11:30 - 13:30',
-			'Deutsch Macht': '13:30 - 15:30',
-			'Spectrum Book': '15:30 - 17:30',
-			'Active Grammar': '17:30 - 18:30',
-			'Review': '18:30 - 21:30',
-			'Sleep Preparation': '21:30 - 22:00'
-		},
-		Monday: {
-			morning_routine: '05:30 - 05:45',
-			shower: '05:45 - 06:00',
-			breakfast: '06:00 - 06:30',
-			'Test': '06:30 - 08:30',
-			leave_home: '08:45',
-			university: '09:30 - 12:30',
-			return_home: '12:30 - 13:15',
-			'Spectrum Book': '13:15 - 15:15',
-			'Shaghayebn': '15:15 - 17:15',
-			'Vocabulary': '17:15 - 19:15',
-			'Deutsch Macht': '19:15 - 20:15',
-			'Active Grammar': '20:15 - 21:15',
-			'Sleep Preparation': '21:30 - 22:00'
-		},
-		Tuesday: {
-			running: '05:45 - 07:15',
-			shower: '07:15 - 07:30',
-			breakfast: '07:30 - 08:00',
-			'Deutsch Macht': '08:00 - 10:00',
-			'Spectrum Book': '10:00 - 12:00',
-			'Test': '12:00 - 15:00',
-			'Shaghayebn': '15:00 - 17:00',
-			'Vocabulary': '17:00 - 19:00',
-			'Active Grammar': '19:00 - 20:00',
-			'Review': '20:00 - 21:30',
-			'Sleep Preparation': '21:30 - 22:00'
-		},
-		Wednesday: {
-			morning_routine: '05:30 - 05:45',
-			shower: '05:45 - 06:00',
-			breakfast: '06:00 - 06:30',
-			'Deutsch Macht': '06:30 - 08:00',
-			leave_home: '08:45',
-			university: '09:30 - 14:00',
-			return_home: '14:00 - 14:45',
-			'Test': '14:45 - 17:45',
-			'Shaghayebn': '17:45 - 19:45',
-			'Vocabulary': '19:45 - 21:15',
-			'Sleep Preparation': '21:30 - 22:00'
-		},
-		Thursday: {
-			running: '05:45 - 07:15',
-			shower: '07:15 - 07:30',
-			breakfast: '07:30 - 08:00',
-			'Deutsch Macht': '08:00 - 10:00',
-			'Spectrum Book': '10:00 - 12:00',
-			'Test': '12:00 - 15:00',
-			'Shaghayebn': '15:00 - 17:00',
-			'Vocabulary': '17:00 - 19:00',
-			'Active Grammar': '19:00 - 20:00',
-			'Review': '20:00 - 21:30',
-			'Sleep Preparation': '21:30 - 22:00'
-		},
-		Friday: {
-			morning_routine: '05:30 - 05:45',
-			shower: '05:45 - 06:00',
-			breakfast: '06:00 - 06:30',
-			'Test': '06:30 - 08:30',
-			leave_home: '08:45',
-			university: '09:30 - 11:00',
-			return_home: '11:00 - 11:45',
-			'Spectrum Book': '11:45 - 13:45',
-			'Shaghayebn': '13:45 - 15:45',
-			'Vocabulary': '15:45 - 17:45',
-			'Deutsch Macht': '17:45 - 19:45',
-			'Active Grammar': '19:45 - 20:45',
-			'Review': '20:45 - 21:30',
-			'Sleep Preparation': '21:30 - 22:00'
-		}
-	};
-
-	// نگاشت شماره روز JS (۰=یکشنبه) به نام روز در weeklySchedule
+	// نگاشت شماره روز JS (۰=یکشنبه) به نام روز فارسی
 	const jsDayToName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 	const persianDayNames = {
 		Sunday: 'یکشنبه', Monday: 'دوشنبه', Tuesday: 'سه‌شنبه',
@@ -940,22 +840,9 @@
 		return P(t);
 	}
 
-	function toLatinDigits(str) {
-		return str.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
-	}
-
-	// زمان‌هایی که فقط یک نقطه‌اند (مثل leave_home) را به صورت بازه فرض نکن، فقط برای ترتیب استفاده می‌شود
-	function timeKeyForSort(t) {
-		return toLatinDigits(t.split(' - ')[0]);
-	}
-
-	function getDayRows(dayIndex) {
-		const dayName = jsDayToName[dayIndex];
-		const day = weeklySchedule[dayName] || weeklySchedule['Saturday'];
-		return Object.entries(day)
-			.map(([key, time]) => [time, toPersianTime(time), activityNames[key] || key])
-			.sort((a, b) => timeKeyForSort(a[0]).localeCompare(timeKeyForSort(b[0])))
-			.map(([, ptime, name]) => [ptime, name]);
+	function getDayRows() {
+		// برنامه هر روز یکسان است
+		return dailySchedule.map(([time, name]) => [toPersianTime(time), name]);
 	}
 
 	/* ═══════════════════════════════════════════
@@ -1143,7 +1030,7 @@
 		const gy=date.getFullYear(), gm=date.getMonth()+1, gd=date.getDate();
 		const a=Math.floor((14-gm)/12), y=gy+4800-a, m=gm+12*a-3;
 		let jd=gd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
-		const l=jd-1948440+10632-1, n=Math.floor((l-1)/10631);
+		const l=jd-1948440+10632+1, n=Math.floor((l-1)/10631);
 		let rem=l-10631*n+354;
 		const jump=Math.floor((10985-rem)/5316)*Math.floor(50*rem/17719)+Math.floor(rem/5670)*Math.floor(43*rem/15238);
 		rem=rem-Math.floor((30-jump)/15)*Math.floor(17719*jump/50)-Math.floor(jump/16)*Math.floor(15238*jump/43)+29;
@@ -1267,13 +1154,11 @@
 
 		const dayName = jsDayToName[dayIndex];
 		const isToday = dayIndex === new Date().getDay();
-		const isRunningDay = runningDays.includes(dayName);
 
 		$('scheduleTitle').innerHTML =
-			`برنامه روز ${persianDayNames[dayName]}${isToday ? ' (امروز)' : ''}` +
-			(isRunningDay ? ' <span class="day-running-badge">🏃</span>' : '');
+			`برنامه روز ${persianDayNames[dayName]}${isToday ? ' (امروز)' : ''}`;
 
-		const rows = getDayRows(dayIndex)
+		const rows = getDayRows()
 			.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`)
 			.join('');
 
