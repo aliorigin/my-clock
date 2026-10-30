@@ -528,12 +528,13 @@
 			font-size: 20px;
 		}
 
-		.day-running-badge {
-			display: inline-block;
-			margin-right: 8px;
-			font-size: 0.6em;
-			color: #00FF00;
-			vertical-align: middle;
+		.day-type-label {
+			display: block;
+			margin-top: 6px;
+			font-size: 0.5em;
+			font-weight: 400;
+			color: var(--color);
+			opacity: 0.85;
 		}
 
 		.study-priorities-box {
@@ -795,12 +796,6 @@
 		6: { text: 'تنها راه انجام کارهای بزرگ این است که کاری را که انجام می‌دهی دوست داشته باشی.', author: 'استیو جابز' }
 	};
 
-	const sleepSchedule = {
-		sleep_time: '23:00',
-		wake_time: '06:30',
-		morning_routine: '06:30 - 07:30'
-	};
-
 	const studyPriorities = [
 		'🥇 Deutsch macht — ۳h',
 		'🥈 Starten wir! — ۲h',
@@ -811,25 +806,44 @@
 		'7️⃣ Hören + Sprechen — ۱h'
 	];
 
-	// برنامه روزانه یکسان - هر روز هفته دقیقاً همین برنامه اجرا می‌شود
-	const dailySchedule = [
-		['06:30 - 07:30', '🚿 صبحانه + دوش'],
-		['07:30 - 10:30', '🇩🇪 Deutsch macht — ۳ ساعت'],
-		['10:30 - 10:45', '☕ استراحت ۱ — ۱۵ دقیقه'],
-		['10:45 - 12:45', '📘 Starten wir! — ۲ ساعت'],
-		['12:45 - 13:30', '🍽️ ناهار — ۴۵ دقیقه'],
-		['13:30 - 15:00', '🧠 لغت — ۱ ساعت و ۳۰ دقیقه'],
-		['15:00 - 15:15', '☕ استراحت ۲ — ۱۵ دقیقه'],
-		['15:15 - 16:15', '▶️ YouTube — ۱ ساعت'],
-		['16:15 - 17:15', '📗 گرامر — ۱ ساعت'],
-		['17:15 - 17:30', '☕ استراحت ۳ — ۱۵ دقیقه'],
-		['17:30 - 20:30', '📕 Spektrum — ۳ ساعت'],
-		['20:30 - 21:15', '🍽️ شام — ۴۵ دقیقه'],
-		['21:15 - 21:30', '☕ استراحت ۴ — ۱۵ دقیقه'],
-		['21:30 - 22:30', '🎧 Hören + Sprechen — ۱ ساعت'],
-		['22:30 - 23:00', '🌙 آماده‌شدن برای خواب'],
-		['23:00', '😴 خواب']
+	// برنامه بر اساس نوع روز: ورزش (دوشنبه/چهارشنبه/جمعه)، کارهای عقب‌افتاده (شنبه/سه‌شنبه/پنجشنبه) و یکشنبه
+	const sharedStudyRows = [
+		['07:30 - 13:30', 'مطالعه زبان'],
+		['13:30 - 14:30', 'ناهار'],
+		['14:30 - 17:30', 'مطالعه زبان'],
+		['17:30 - 18:30', 'توسعه فردی'],
+		['18:30 - 19:30', 'شام'],
+		['19:30 - 20:30', 'مطالعه پول و امور مالی'],
+		['20:30 - 22:00', 'مطالعه کامپیوتر'],
+		['22:00 - 22:30', 'کتاب‌خوانی در تخت']
 	];
+
+	const scheduleTypes = {
+		exercise: {
+			label: 'روز ورزش',
+			rows: [['06:00 - 07:30', 'ورزش + دوش گرفتن و صبحانه'], ...sharedStudyRows]
+		},
+		backlog: {
+			label: 'روز کارهای عقب‌افتاده',
+			rows: [['06:00 - 07:30', 'کارهای عقب‌افتاده + دوش گرفتن و صبحانه'], ...sharedStudyRows]
+		},
+		sunday: {
+			label: 'روز رسیدگی به خانه و تفریح',
+			rows: [
+				['08:00 - 08:30', 'بیدار شدن و صبحانه'],
+				['08:30 - 11:30', 'انجام کارهای عقب‌افتاده'],
+				['11:30 - 14:00', 'تمیز کردن خانه و دوش گرفتن'],
+				['14:00 - 15:00', 'ناهار'],
+				['15:00 - 18:00', 'فیلم دیدن یا کتاب خواندن'],
+				['18:00 - 21:30', 'گردش و خرید'],
+				['21:30 - 22:00', 'جابه‌جا و مرتب کردن خریدها'],
+				['22:00 - 22:30', 'کتاب‌خوانی در تخت']
+			]
+		}
+	};
+
+	// شماره روز JS (۰=یکشنبه) ← نوع برنامه
+	const dayTypeByIndex = ['sunday', 'exercise', 'backlog', 'exercise', 'backlog', 'exercise', 'backlog'];
 
 	// نگاشت شماره روز JS (۰=یکشنبه) به نام روز فارسی
 	const jsDayToName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -842,9 +856,24 @@
 		return P(t);
 	}
 
-	function getDayRows() {
-		// برنامه هر روز یکسان است
-		return dailySchedule.map(([time, name]) => [toPersianTime(time), name]);
+	function getDayType(dayIndex) {
+		return scheduleTypes[dayTypeByIndex[dayIndex]];
+	}
+
+	function getDayRows(dayIndex) {
+		return getDayType(dayIndex).rows.map(([time, name]) => [toPersianTime(time), name]);
+	}
+
+	// ساعت بیداری، روتین صبحگاهی و خواب از روی ردیف‌های همان روز محاسبه می‌شود
+	function getDayInfo(dayIndex) {
+		const rows = getDayType(dayIndex).rows;
+		const first = rows[0][0];
+		const last = rows[rows.length - 1][0];
+		return {
+			wake: first.split(' - ')[0],
+			morning: first,
+			sleep: last.split(' - ').pop()
+		};
 	}
 
 	/* ═══════════════════════════════════════════
@@ -1110,7 +1139,7 @@
 		aloneEl.style.textShadow = `0 0 ${15*ci/100}px #BF7FFF, 0 0 ${30*ci/100}px #9B30FF`;
 
 		// روزشمار برگشت (آبی - از 3 می 2026)
-		const backStart = new Date('2026-09-27T00:00:00');
+		const backStart = new Date('2026-10-30T00:00:00');
 		const backDays = Math.floor((now - backStart) / 86400000);
 		backEl.textContent = P(Math.max(0, backDays));
 		backEl.style.textShadow = `0 0 ${15*ci/100}px #6AB8FF, 0 0 ${30*ci/100}px #1E90FF`;
@@ -1157,18 +1186,22 @@
 		const dayName = jsDayToName[dayIndex];
 		const isToday = dayIndex === new Date().getDay();
 
-		$('scheduleTitle').innerHTML =
-			`برنامه روز ${persianDayNames[dayName]}${isToday ? ' (امروز)' : ''}`;
+		const dayType = getDayType(dayIndex);
+		const dayInfo = getDayInfo(dayIndex);
 
-		const rows = getDayRows()
+		$('scheduleTitle').innerHTML =
+			`برنامه روز ${persianDayNames[dayName]}${isToday ? ' (امروز)' : ''}` +
+			`<span class="day-type-label">${dayType.label}</span>`;
+
+		const rows = getDayRows(dayIndex)
 			.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`)
 			.join('');
 
 		const sleepInfo = `
 			<div style="margin-bottom:18px; padding:14px 16px; background:rgba(255,255,255,0.05); border-radius:12px; border:1px solid var(--color-alpha20); display:flex; flex-wrap:wrap; gap:14px; justify-content:center; font-size:clamp(12px,2vw,15px);">
-				<span>🌙 خواب: <strong style="color:var(--color);">${toPersianTime(sleepSchedule.sleep_time)}</strong></span>
-				<span>☀️ بیداری: <strong style="color:var(--color);">${toPersianTime(sleepSchedule.wake_time)}</strong></span>
-				<span>🧘 روتین صبحگاهی: <strong style="color:var(--color);">${toPersianTime(sleepSchedule.morning_routine)}</strong></span>
+				<span>🌙 خواب: <strong style="color:var(--color);">${toPersianTime(dayInfo.sleep)}</strong></span>
+				<span>☀️ بیداری: <strong style="color:var(--color);">${toPersianTime(dayInfo.wake)}</strong></span>
+				<span>🧘 روتین صبحگاهی: <strong style="color:var(--color);">${toPersianTime(dayInfo.morning)}</strong></span>
 			</div>
 		`;
 
@@ -1284,4 +1317,4 @@
 	updateClock();
 	</script>
 </body>
-</html>
+	</html>
